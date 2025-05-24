@@ -17,11 +17,14 @@ export default function Product({ product, checked }: ProductComponentProps) {
   const {
     imgUrls,
     name,
-    category: { name: categoryName },
-    subcategory: { name: subcategoryName },
+    category,
+    subcategory,
     price: { amount, currency },
     stock = 12,
   } = product;
+
+  const categoryName = category?.name ?? "";
+  const subcategoryName = subcategory?.name ?? "";
   return (
     <tr className="border-b border-gray-100 relative">
       <td className="p-4">
@@ -63,7 +66,7 @@ export default function Product({ product, checked }: ProductComponentProps) {
           {stock > 20 ? "In stock" : stock === 0 ? "Out of stock" : "Low stock"}
         </Badge>
       </td>
-      <td className="p-4">
+      {/* <td className="p-4">
         <Button variant="ghost" size="icon">
           <MoreVertical size={16} />
         </Button>
@@ -85,7 +88,7 @@ export default function Product({ product, checked }: ProductComponentProps) {
             <span className="text-sm">Edit</span>
           </Button>
         </div>
-      </td>
+      </td> */}
     </tr>
   );
 }
