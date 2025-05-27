@@ -17,7 +17,7 @@ export const getSubCategories = async () => {
     return data;
   } catch (err) {
     console.error("Error fetching products:", err);
-    return [];
+    throw err;
   }
 };
 
@@ -35,7 +35,7 @@ export const postSubCategory = async (subCategory: any) => {
     return data;
   } catch (err) {
     console.error("Error creating category:", err);
-    return null;
+    return err;
   }
 };
 
@@ -51,7 +51,7 @@ export const deleteSubCategory = async (id: string) => {
     return true;
   } catch (err) {
     console.error("Error deleting category:", err);
-    return false;
+    return err;
   }
 };
 
@@ -70,6 +70,6 @@ export const updateSubCategory = async (subCategory: any) => {
     return data;
   } catch (err) {
     console.error("Error updating category:", err);
-    return null;
+    return err;
   }
 };

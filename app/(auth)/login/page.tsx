@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-
+import { useForm } from "react-hook-form";
 import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -14,14 +14,27 @@ import Loader from "@/components/Loader";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+interface LoginFormInputs {
+  email: string;
+  password: string;
+}
+
 interface LoginPageProps {
   onLogin: (email: string, password: string) => boolean;
 }
 
 export function LoginPage({ onLogin }: LoginPageProps) {
-  const [email, setEmail] = useState("yona@example.com");
-  const [password, setPassword] = useState("12345678");
-  const [error, setError] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormInputs>({
+    defaultValues: {
+      email: "yona@example.com",
+      password: "12345678",
+    },
+  });
+
   const [showPassword, setShowPassword] = useState(false);
   const [isRobot, setIsRobot] = useState(false);
   const {
@@ -33,10 +46,10 @@ export function LoginPage({ onLogin }: LoginPageProps) {
     error: loginError,
   } = useLogin();
   const router = useRouter();
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // login({ email, password });
-    if (email === "yona@example.com") {
+
+  const onSubmit = (data: LoginFormInputs) => {
+    login(data);
+    if (data.email === "yona@example.com") {
       router.push("/dashboard");
       toast.success("Login Success");
     }
@@ -73,16 +86,20 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             <h1 className="text-2xl font-bold mt-2">Login To Admin</h1>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email">Enter Address</Label>
+              <Label htmlFor="email">Email Address</Label>
               <Input
                 id="email"
                 type="email"
                 placeholder="Enter Email Address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                {...register("email", { required: "Email is required" })}
               />
+              {errors.email && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -92,8 +109,9 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  {...register("password", {
+                    required: "Password is required",
+                  })}
                 />
                 <button
                   type="button"
@@ -103,6 +121,11 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
+              {errors.password && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             <div className="border border-gray-300 rounded-md p-4">
@@ -135,7 +158,11 @@ export function LoginPage({ onLogin }: LoginPageProps) {
               </div>
             </div>
 
-            {error && <div className="text-red-500 text-sm">{error}</div>}
+            {(loginError || isError) && (
+              <div className="text-red-500 text-sm">
+                {loginError?.message || "Login failed. Please try again."}
+              </div>
+            )}
 
             <Button
               type="submit"

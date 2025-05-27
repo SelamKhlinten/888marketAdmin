@@ -5,7 +5,7 @@ export interface LoginCredentials {
   password: string;
 }
 
-export const login = async ({ email, password }: LoginCredentials) => {
+export const loginUser = async ({ email, password }: LoginCredentials) => {
   try {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,

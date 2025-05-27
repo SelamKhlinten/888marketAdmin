@@ -22,14 +22,18 @@ export function useProducts() {
     isLoading: isLoadingProducts,
     data,
     isError,
+    refetch: refetchProducts,
   } = useQuery({
     queryKey: ["products"],
     queryFn: getProducts,
   });
-  const products: any = [];
+  const products = data?.map((product: any) => {
+    return camelCase(product);
+  });
 
   return {
     createProduct,
+    refetchProducts,
     isLoadingProducts,
     isCreatingProduct,
     products,

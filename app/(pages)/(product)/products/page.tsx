@@ -20,7 +20,8 @@ import Error from "@/components/Error";
 import Empty from "@/components/Empty";
 
 export default function Products() {
-  const { products, isLoadingProducts, isError } = useProducts();
+  const { products, isLoadingProducts, isError, refetchProducts } =
+    useProducts();
   const router = useRouter();
   const [isAllSelected, setIsSelectedAll] = useState<boolean>(false);
 
@@ -111,10 +112,17 @@ export default function Products() {
                     </td>
                   </tr>
                 ) : isError ? (
-                  <Error />
+                  <tr>
+                    <td colSpan={8}>
+                      <Error
+                        description="We encountered an error while fetching products. Please try again."
+                        onRetry={refetchProducts}
+                      />
+                    </td>
+                  </tr>
                 ) : !products?.length ? (
                   <tr>
-                    <td colSpan={7}>
+                    <td colSpan={8}>
                       <Empty
                         title="No products available."
                         icon={<ArchiveX size={40} className="text-blue-500" />}
@@ -127,10 +135,10 @@ export default function Products() {
                     </td>
                   </tr>
                 ) : (
-                  products?.map((pro: ProductTypes) => (
+                  products?.map((product) => (
                     <Product
-                      key={pro.id}
-                      product={pro as ProductTypes}
+                      key={product.id}
+                      product={product as ProductTypes}
                       checked={isAllSelected}
                     />
                   ))

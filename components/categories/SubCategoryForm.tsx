@@ -20,12 +20,12 @@ import SubmitButton from "../SubmitButton";
 import { useCategories } from "@/hooks/useCategories";
 import { useSubCategories } from "@/hooks/useSubCategories";
 import { useParams } from "next/navigation";
-
+import { SubCategoryType } from "./type";
 
 export default function SubCategoryForm() {
   const { subCategories } = useSubCategories();
   const { id } = useParams();
-  const subCategory = subCategories?.find((scat) => scat.id === id);
+  const subCategory = subCategories?.find((scat: any) => scat.id === id);
   const thumbnail = useRef<HTMLInputElement>(null);
   const { categories } = useCategories();
   const { createSubCat, isCreatingSubCat } = useSubCategories();

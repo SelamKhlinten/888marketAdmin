@@ -23,7 +23,9 @@ export default function Error({
   showIcon = true,
 }: ErrorProps) {
   return (
-    <Card className={cn("border-destructive/20 bg-destructive/5", className)}>
+    <Card
+      className={cn("bg-destructive/5 border-none rounded-none", className)}
+    >
       <CardContent className="flex flex-col items-center justify-center py-16 px-6 text-center">
         {showIcon && (
           <div className="mb-4 text-destructive">
@@ -35,7 +37,11 @@ export default function Error({
           {description}
         </p>
         {onRetry && (
-          <Button onClick={onRetry} variant="outline" className="gap-2">
+          <Button
+            onClick={onRetry}
+            variant="outline"
+            className="gap-2 bg-blue-500 hover:bg-blue-600 text-white hover:text-white"
+          >
             <RefreshCw className="h-4 w-4" />
             {retryLabel}
           </Button>

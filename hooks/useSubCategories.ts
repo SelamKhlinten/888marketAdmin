@@ -23,6 +23,7 @@ export function useSubCategories() {
     isLoading: isLoadingSubCategories,
     data,
     isError,
+    refetch: refetchSubCategories,
   } = useQuery({
     queryKey: ["sub-categories"],
     queryFn: getSubCategories,
@@ -35,7 +36,8 @@ export function useSubCategories() {
     isLoadingSubCategories,
     subCategories,
     isError,
-    createSubCat,
     isCreatingSubCat,
+    createSubCat,
+    refetchSubCategories,
   };
 }

@@ -25,6 +25,7 @@ export function useCategories() {
     isLoading: isLoadingCategories,
     data,
     isError,
+    refetch: refetchCategories,
   } = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
@@ -39,5 +40,6 @@ export function useCategories() {
     isError,
     createCagetory,
     isCreatingCategory,
+    refetchCategories,
   };
 }

@@ -47,6 +47,7 @@ export const createCustomer = async (product: any) => {
     return data;
   } catch (err: any) {
     console.error(err.message);
+    return err;
   }
 };
 
@@ -57,7 +58,7 @@ export const deleteCustomer = async (id: string) => {
     return true;
   } catch (err) {
     console.error("Error deleting product:", err);
-    return false;
+    return err;
   }
 };
 
@@ -90,6 +91,6 @@ export const updateCustomer = async (product: any) => {
     return data;
   } catch (err) {
     console.error("Error updating product:", err);
-    return false;
+    return err;
   }
 };

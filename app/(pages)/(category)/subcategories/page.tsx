@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Plus, Search, Trash2 } from "lucide-react";
+import { ArchiveX, Plus, Search, Trash2 } from "lucide-react";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,10 +9,18 @@ import { Checkbox } from "@/components/ui/checkbox";
 import SubCategory from "@/components/categories/SubCategory";
 import { useSubCategories } from "@/hooks/useSubCategories";
 import { useState } from "react";
+import Error from "@/components/Error";
+import Empty from "@/components/Empty";
+import { SubCategoryType } from "@/components/categories/type";
 
 export default function SubCategories() {
   const router = useRouter();
-  const { subCategories, isLoadingSubCategories } = useSubCategories();
+  const {
+    subCategories,
+    isLoadingSubCategories,
+    isError,
+    refetchSubCategories,
+  } = useSubCategories();
   const [isAllSelected, setIsSelectedAll] = useState<boolean>(false);
   return (
     <main className="p-6">
@@ -81,22 +89,40 @@ export default function SubCategories() {
               <tbody>
                 {isLoadingSubCategories ? (
                   <tr>
-                    <td className="px-4 py-10" colSpan={7}>
+                    <td className="px-4 py-10" colSpan={5}>
                       <div className="flex justify-center items-center w-full">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
                       </div>
+                    </td>
+                  </tr>
+                ) : isError ? (
+                  <tr>
+                    <td colSpan={5}>
+                      <Error
+                        description="We encountered an error while fetching categories. Please try again."
+                        onRetry={refetchSubCategories}
+                      />
+                    </td>
+                  </tr>
+                ) : !subCategories?.length ? (
+                  <tr>
+                    <td colSpan={7}>
+                      <Empty
+                        title="No sub-categories available."
+                        icon={<ArchiveX size={40} className="text-blue-500" />}
+                        description="Get started by adding sub-categories."
+                        action={{
+                          label: "Add new sub-category",
+                          onClick: () => router.push("/subcategory/new"),
+                        }}
+                      />
                     </td>
                   </tr>
                 ) : (
                   subCategories?.map((subcategory) => (
                     <SubCategory
                       key={subcategory.id}
-                      subCategory={{
-                        name: subcategory.name,
-                        imgUrl: subcategory.imgUrl,
-                        id: subcategory.id,
-                        category: subcategory.category,
-                      }}
+                      subCategory={subcategory as SubCategoryType}
                       checked={isAllSelected}
                     />
                   ))

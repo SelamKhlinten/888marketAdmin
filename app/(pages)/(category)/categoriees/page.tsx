@@ -12,11 +12,13 @@ import { useCategories } from "@/hooks/useCategories";
 import Category from "@/components/categories/Category";
 import Empty from "@/components/Empty";
 import Error from "@/components/Error";
+import { CategoryType } from "@/components/categories/type";
 
 export default function Categories() {
   const router = useRouter();
 
-  const { categories, isError, isLoadingCategories } = useCategories();
+  const { categories, isError, isLoadingCategories, refetchCategories } =
+    useCategories();
   const [isAllSelected, setIsSelectedAll] = useState<boolean>(false);
 
   return (
@@ -89,39 +91,25 @@ export default function Categories() {
                       </div>
                     </td>
                   </tr>
-                ) : (
-                  categories?.map((category) => (
-                    <Category
-                      key={category.id}
-                      category={{
-                        name: category.name,
-                        id: category.id,
-                        imgUrl: category.imgUrl,
-                      }}
-                      checked={isAllSelected}
-                    />
-                  ))
-                )}
-                {isLoadingCategories ? (
+                ) : isError ? (
                   <tr>
-                    <td className="px-4 py-10" colSpan={7}>
-                      <div className="flex justify-center items-center w-full">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-                      </div>
+                    <td colSpan={7}>
+                      <Error
+                        description="We encountered an error while fetching categories. Please try again."
+                        onRetry={refetchCategories}
+                      />
                     </td>
                   </tr>
-                ) : isError ? (
-                  <Error />
                 ) : !categories?.length ? (
                   <tr>
                     <td colSpan={7}>
                       <Empty
                         title="No categories available."
                         icon={<ArchiveX size={40} className="text-blue-500" />}
-                        description="Get started by adding categories."
+                        description="Get started by adding a new category."
                         action={{
-                          label: "Add new Product",
-                          onClick: () => router.push("/product/new"),
+                          label: "Add new Category",
+                          onClick: () => router.push("/category/new"),
                         }}
                       />
                     </td>
@@ -130,11 +118,7 @@ export default function Categories() {
                   categories?.map((category) => (
                     <Category
                       key={category.id}
-                      category={{
-                        name: category.name,
-                        id: category.id,
-                        imgUrl: category.imgUrl,
-                      }}
+                      category={category as CategoryType}
                       checked={isAllSelected}
                     />
                   ))
