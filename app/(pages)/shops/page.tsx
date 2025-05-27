@@ -27,8 +27,8 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { initialShops } from "./data/shops-data";
-import { ShopDetails } from "./components/shop-details";
-import { ShopsList } from "./components/shops-list";
+import { ShopDetails } from "@/components/shop/shop-details";
+import { ShopsList } from "@/components/shop/shops-list";
 import type { ShopType } from "./types/shop-types";
 
 export default function ShopsManagement() {

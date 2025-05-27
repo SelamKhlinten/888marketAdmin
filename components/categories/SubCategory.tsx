@@ -5,8 +5,6 @@ import { MoreVertical } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "../ui/button";
 import { SubCategoryType } from "./type";
-import { useParams } from "next/navigation";
-import { useSubCategories } from "@/hooks/useSubCategories";
 
 interface SubCategoryProps {
   subCategory: SubCategoryType;

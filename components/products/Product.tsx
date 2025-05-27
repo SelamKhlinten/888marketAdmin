@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 
 interface ProductComponentProps {
   product: ProductTypes;
-  key: string;
+  key: number;
   checked?: boolean;
 }
 

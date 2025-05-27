@@ -1,6 +1,13 @@
 "use client";
 
-import { Filter, MoreVertical, Plus, Search, Trash2 } from "lucide-react";
+import {
+  ArchiveX,
+  Filter,
+  MoreVertical,
+  Plus,
+  Search,
+  Trash2,
+} from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -9,9 +16,11 @@ import { useProducts } from "@/hooks/useProducts";
 import Product from "@/components/products/Product";
 import { useRouter } from "next/navigation";
 import ProductTypes from "@/components/products/type";
+import Error from "@/components/Error";
+import Empty from "@/components/Empty";
 
 export default function Products() {
-  const { products, isLoadingProducts } = useProducts();
+  const { products, isLoadingProducts, isError } = useProducts();
   const router = useRouter();
   const [isAllSelected, setIsSelectedAll] = useState<boolean>(false);
 
@@ -101,8 +110,24 @@ export default function Products() {
                       </div>
                     </td>
                   </tr>
+                ) : isError ? (
+                  <Error />
+                ) : !products?.length ? (
+                  <tr>
+                    <td colSpan={7}>
+                      <Empty
+                        title="No products available."
+                        icon={<ArchiveX size={40} className="text-blue-500" />}
+                        description="Get started by adding products."
+                        action={{
+                          label: "Add new Product",
+                          onClick: () => router.push("/product/new"),
+                        }}
+                      />
+                    </td>
+                  </tr>
                 ) : (
-                  products?.map((pro) => (
+                  products?.map((pro: ProductTypes) => (
                     <Product
                       key={pro.id}
                       product={pro as ProductTypes}

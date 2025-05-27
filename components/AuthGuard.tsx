@@ -2,20 +2,18 @@
 
 import { usePathname } from "next/navigation";
 import { useAuthBootstrap } from "@/hooks/useAuthBootstrap";
-import Loading from "@/app/loading";
+import Loader from "./Loader";
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   // const pathname = usePathname();
   // const isAuthPage = pathname.includes("login");
-
   // const { loading, authenticated } = useAuthBootstrap();
 
   // console.log(loading, authenticated, isAuthPage);
 
-  // if (loading) return <Loading />;
+  // if (loading) return <Loader />;
 
   // if (!authenticated && !isAuthPage) {
-  //   // You can also redirect if needed
   //   return null;
   // }
 

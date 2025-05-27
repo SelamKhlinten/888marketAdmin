@@ -1,13 +1,17 @@
 "use client";
 
-import { Plus, Search, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { ArchiveX, Plus, Search, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import Category from "@/components/categories/Category";
+
 import { useCategories } from "@/hooks/useCategories";
+import Category from "@/components/categories/Category";
+import Empty from "@/components/Empty";
+import Error from "@/components/Error";
 
 export default function Categories() {
   const router = useRouter();
@@ -83,6 +87,43 @@ export default function Categories() {
                       <div className="flex justify-center items-center w-full">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
                       </div>
+                    </td>
+                  </tr>
+                ) : (
+                  categories?.map((category) => (
+                    <Category
+                      key={category.id}
+                      category={{
+                        name: category.name,
+                        id: category.id,
+                        imgUrl: category.imgUrl,
+                      }}
+                      checked={isAllSelected}
+                    />
+                  ))
+                )}
+                {isLoadingCategories ? (
+                  <tr>
+                    <td className="px-4 py-10" colSpan={7}>
+                      <div className="flex justify-center items-center w-full">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+                      </div>
+                    </td>
+                  </tr>
+                ) : isError ? (
+                  <Error />
+                ) : !categories?.length ? (
+                  <tr>
+                    <td colSpan={7}>
+                      <Empty
+                        title="No categories available."
+                        icon={<ArchiveX size={40} className="text-blue-500" />}
+                        description="Get started by adding categories."
+                        action={{
+                          label: "Add new Product",
+                          onClick: () => router.push("/product/new"),
+                        }}
+                      />
                     </td>
                   </tr>
                 ) : (

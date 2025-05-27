@@ -1,13 +1,13 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { ArrowLeft, Check, Plus, Save, ShoppingBag } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import Image from "next/image";
+import { ArrowLeft, Plus, ShoppingBag } from "lucide-react";
+import { Controller, useForm } from "react-hook-form";
+
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
 import {
   Select,
   SelectContent,
@@ -15,14 +15,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Link from "next/link";
-import Image from "next/image";
+
 import SubmitButton from "../SubmitButton";
-import { Controller, useForm } from "react-hook-form";
 import { useCategories } from "@/hooks/useCategories";
-import { SubCategoryType } from "./type";
 import { useSubCategories } from "@/hooks/useSubCategories";
 import { useParams } from "next/navigation";
+
 
 export default function SubCategoryForm() {
   const { subCategories } = useSubCategories();

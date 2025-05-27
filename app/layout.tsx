@@ -8,8 +8,9 @@ import { usePathname } from "next/navigation";
 import { AuthProvider } from "@/context/AuthContext";
 import AuthGuard from "@/components/AuthGuard";
 import Header from "@/components/Header";
-import { Bell, ChevronDown, Search } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
+import { useEffect, useState } from "react";
+import Loader from "@/components/Loader";
 
 export default function RootLayout({
   children,
@@ -18,10 +19,11 @@ export default function RootLayout({
 }>) {
   const pathName = usePathname();
   const isAuthPage = pathName.includes("login");
+  const [isLoading, setIsLoading] = useState(true);
 
-  function handleBell() {
-    toast.success("Welcome to 888Market");
-  }
+  useEffect(() => {
+    setTimeout(() => setIsLoading(false), 500);
+  }, []);
 
   return (
     <html lang="en">
@@ -36,7 +38,9 @@ export default function RootLayout({
         <ReactQueryProvider>
           <AuthProvider>
             <AuthGuard>
-              {isAuthPage ? (
+              {isLoading ? (
+                <Loader />
+              ) : isAuthPage ? (
                 children
               ) : (
                 <div

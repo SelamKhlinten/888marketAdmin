@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { isTokenExpired } from "@/utils/token";
 import { useAuth } from "@/context/AuthContext";
+import supabase from "@/lib/config/supabase"; // adjust the import to your config
 
 export function useAuthBootstrap() {
   const router = useRouter();
@@ -10,29 +10,39 @@ export function useAuthBootstrap() {
   const { authenticated, setAuthenticated } = useAuth();
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    const refreshToken = localStorage.getItem("refreshToken");
-
-    const refreshAccessToken = async () => {
+    const checkSession = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/login/refresh/`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ refresh: refreshToken }),
+        const { data, error } = await supabase.auth.getSession();
+
+        if (error) throw error;
+
+        const session = data.session;
+
+        if (!session) {
+          setAuthenticated(false);
+          router.push("/login");
+        } else {
+          // Check if access token is expired
+          const expiresAt = session.expires_at; // unix timestamp in seconds
+          const now = Math.floor(Date.now() / 1000);
+
+          if (expiresAt && expiresAt < now) {
+            // Access token expired, try to refresh
+            const { data: refreshedData, error: refreshError } =
+              await supabase.auth.refreshSession();
+
+            if (refreshError || !refreshedData.session) {
+              setAuthenticated(false);
+              router.push("/login");
+            } else {
+              setAuthenticated(true);
+            }
+          } else {
+            // Access token valid
+            setAuthenticated(true);
           }
-        );
-
-        if (!res.ok) throw new Error("Refresh failed");
-
-        const data = await res.json();
-        localStorage.setItem("accessToken", data.access);
-        localStorage.setItem("refreshToken", data.refresh);
-        setAuthenticated(true);
-      } catch {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
+        }
+      } catch (err) {
         setAuthenticated(false);
         router.push("/login");
       } finally {
@@ -40,25 +50,8 @@ export function useAuthBootstrap() {
       }
     };
 
-    if (!accessToken && !refreshToken) {
-      setAuthenticated(false);
-      router.push("/login");
-      setLoading(false);
-    } else if (accessToken && isTokenExpired(accessToken)) {
-      if (refreshToken && !isTokenExpired(refreshToken)) {
-        refreshAccessToken();
-      } else {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        setAuthenticated(false);
-        router.push("/login");
-        setLoading(false);
-      }
-    } else {
-      setAuthenticated(true);
-      setLoading(false);
-    }
-  }, [router]);
+    checkSession();
+  }, [router, setAuthenticated]);
 
   return { loading, authenticated };
 }

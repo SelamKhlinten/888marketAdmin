@@ -1,43 +1,49 @@
+import supabase from "../config/supabase";
+
 export interface LoginCredentials {
   email: string;
   password: string;
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+export const login = async ({ email, password }: LoginCredentials) => {
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-export const loginUser = async (credentials: LoginCredentials) => {
-  const res = await fetch(`${baseUrl}/login/`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(credentials),
-  });
+    if (error) throw error;
 
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || "Login failed");
+    const session = data.session;
+
+    if (session) {
+      const accessToken = session.access_token;
+      const refreshToken = session.refresh_token;
+
+      localStorage.setItem("access_token", accessToken);
+      localStorage.setItem("refresh_token", refreshToken);
+
+      return session.user;
+    } else {
+      console.warn("No session returned");
+      return null;
+    }
+  } catch (err: any) {
+    console.error("Login error:", err.message);
+    alert("Login failed: " + err.message);
+    return null;
   }
-
-  return res.json();
 };
 
-export const refreshToken = async () => {
-  const refresh = localStorage.getItem("refreshToken");
-  console.log(refresh);
-  const res = await fetch(`${baseUrl}/login/refresh/`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ refresh }),
-  });
+export const forgotPassword = async (email: string): Promise<void> => {
+  try {
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: "https://yourdomain.com/update-password",
+    });
 
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || "Failed to refresh token");
+    if (error) throw error;
+  } catch (err: any) {
+    console.error("Password reset error:", err.message);
+    alert("Failed to send reset link: " + err.message);
   }
-  const result = await res.json();
-  localStorage.setItem("accessToken", result?.access);
-  localStorage.setItem("refreshToken", result?.refresh);
 };

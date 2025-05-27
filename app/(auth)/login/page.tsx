@@ -9,9 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
-import { redirect } from "next/navigation";
 import { useLogin } from "@/hooks/useLogin";
-import Loading from "@/app/loading";
+import Loader from "@/components/Loader";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -45,7 +44,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 bg-[url('/img/admin-bg.svg')]">
-      {isLogggingIn && <Loading />}
+      {isLogggingIn && <Loader />}
       <div className="w-full max-w-xl grid bg-white rounded-lg overflow-hidden shadow-xl">
         <div className="p-8 flex flex-col justify-center">
           <div className="text-center mb-8">
@@ -145,10 +144,6 @@ export function LoginPage({ onLogin }: LoginPageProps) {
               Login
             </Button>
           </form>
-
-          {/* <div className="mt-6 text-center text-sm text-gray-500">
-            <p>Use admin@gmail.com / 12345678 to login</p>
-          </div> */}
         </div>
       </div>
     </div>

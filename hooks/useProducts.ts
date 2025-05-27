@@ -26,9 +26,7 @@ export function useProducts() {
     queryKey: ["products"],
     queryFn: getProducts,
   });
-  const products = data?.map((product: any) => {
-    return camelCase(product);
-  });
+  const products: any = [];
 
   return {
     createProduct,
