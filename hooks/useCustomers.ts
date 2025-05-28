@@ -1,8 +1,11 @@
-import { getProducts, postProduct } from "@/lib/api/products";
 import camelCase from "@/utils/camelCase";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { createCustomer as crCustomer, getCustomers } from "@/lib/api/customer";
+import {
+  createCustomer as crCustomer,
+  getCustomers,
+  deleteCustomer as removeCustomer,
+} from "@/lib/api/customer";
 
 export function useCustomers() {
   const queryClient = useQueryClient();
@@ -11,7 +14,7 @@ export function useCustomers() {
     {
       mutationFn: crCustomer,
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["products"] });
+        queryClient.invalidateQueries({ queryKey: ["customers"] });
         toast.success("Product succesfully created.");
       },
       onError: (err: any) => {
@@ -23,14 +26,14 @@ export function useCustomers() {
 
   const { mutate: deleteCustomer, isPending: isDeletingCustomer } = useMutation(
     {
-      mutationFn: postProduct,
+      mutationFn: removeCustomer,
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["products"] });
-        toast.success("Product succesfully created.");
+        queryClient.invalidateQueries({ queryKey: ["customers"] });
+        toast.success("Customer removed succesfully.");
       },
       onError: (err: any) => {
         console.error("Login Error:", err?.message || "Unknown Error");
-        toast.error("An error occured while trying to create the product.");
+        toast.error("An error occured while trying to delete customer.");
       },
     }
   );

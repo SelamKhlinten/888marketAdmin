@@ -39,7 +39,7 @@ export const postSubCategory = async (subCategory: any) => {
   }
 };
 
-export const deleteSubCategory = async (id: string) => {
+export const deleteSubCategory = async (id: number) => {
   try {
     const { error } = await supabase
       .from("subcategories")

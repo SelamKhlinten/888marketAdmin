@@ -45,7 +45,7 @@ export const createCustomer = async (product: any) => {
   }
 };
 
-export const deleteCustomer = async (id: string) => {
+export const deleteCustomer = async (id: number) => {
   try {
     const { error } = await supabase.from("customers").delete().eq("id", id);
     if (error) throw new Error(error?.message);

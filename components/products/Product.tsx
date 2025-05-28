@@ -1,4 +1,6 @@
-import React from "react";
+"use clinet";
+
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { MoreVertical, Pen, Pencil, Trash } from "lucide-react";
 
@@ -11,10 +13,18 @@ interface ProductComponentProps {
   product: ProductTypes;
   key: number;
   checked?: boolean;
+  deleteProduct?: (id: number) => void;
+  removeFromDeleteList?: (id: number) => void;
 }
 
-export default function Product({ product, checked }: ProductComponentProps) {
+export default function Product({
+  product,
+  checked,
+  deleteProduct,
+  removeFromDeleteList,
+}: ProductComponentProps) {
   const {
+    id,
     imgUrls,
     name,
     category,
@@ -25,10 +35,22 @@ export default function Product({ product, checked }: ProductComponentProps) {
 
   const categoryName = category?.name ?? "";
   const subcategoryName = subcategory?.name ?? "";
+  const [checkedState, setCheckedState] = useState(checked || false);
+
+  useEffect(() => {
+    setCheckedState((state) => (checked !== undefined ? checked : state));
+  }, [checked]);
+
   return (
     <tr className="border-b border-gray-100 relative">
       <td className="p-4">
-        <Checkbox checked={checked} />
+        <Checkbox
+          checked={checkedState}
+          onClick={() => {
+            setCheckedState((state) => !state);
+            if (checkedState) removeFromDeleteList?.(id);
+          }}
+        />
       </td>
       <td className="p-4">
         <div className="flex items-center gap-3">
@@ -67,27 +89,25 @@ export default function Product({ product, checked }: ProductComponentProps) {
         </Badge>
       </td>
       <td className="p-4">
-        <Button variant="ghost" size="icon">
-          <MoreVertical size={16} />
-        </Button>
-        {/* <div className="space-y-2 divide-y-2 flex flex-col gap-2 bg-[#dddddd68] p-10 absolute top-10 right-0 z-40 rounded-lg">
+        <div className="flex gap-2">
           <Button
             variant="outline"
             size="sm"
             className="text-red-600 border-red-200"
+            onClick={() => deleteProduct && deleteProduct(id)}
           >
-            <Trash size={16} className="mr-2" />
-            <span className="text-sm">Delete</span>
+            <Trash size={16} />
+            {/* <span className="text-sm">Delete</span> */}
           </Button>
           <Button
             variant="outline"
             size="sm"
             className="text-blue-600 border-blue-200"
           >
-            <Pencil size={16} className="mr-2" />
-            <span className="text-sm">Edit</span>
+            <Pencil size={16} />
+            {/* <span className="text-sm">Edit</span> */}
           </Button>
-        </div> */}
+        </div>
       </td>
     </tr>
   );

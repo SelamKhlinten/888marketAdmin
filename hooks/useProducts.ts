@@ -1,4 +1,8 @@
-import { getProducts, postProduct } from "@/lib/api/products";
+import {
+  getProducts,
+  postProduct,
+  deleteProduct as removeProduct,
+} from "@/lib/api/products";
 import camelCase from "@/utils/camelCase";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -18,6 +22,18 @@ export function useProducts() {
     },
   });
 
+  const { mutate: deleteProduct, isPending: isDeletingProduct } = useMutation({
+    mutationFn: removeProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      toast.success("Product succesfully deleted.");
+    },
+    onError: (err: any) => {
+      console.error("Login Error:", err?.message || "Unknown Error");
+      toast.error("An error occured while trying to delete the product.");
+    },
+  });
+
   const {
     isLoading: isLoadingProducts,
     data,
@@ -34,6 +50,7 @@ export function useProducts() {
   return {
     createProduct,
     refetchProducts,
+    deleteProduct,
     isLoadingProducts,
     isCreatingProduct,
     products,

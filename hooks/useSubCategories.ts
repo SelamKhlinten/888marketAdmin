@@ -1,4 +1,8 @@
-import { getSubCategories, postSubCategory } from "@/lib/api/subCategory";
+import {
+  getSubCategories,
+  postSubCategory,
+  deleteSubCategory as removeSubCategory,
+} from "@/lib/api/subCategory";
 import camelCase from "@/utils/camelCase";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -18,7 +22,18 @@ export function useSubCategories() {
       toast.error("Error creating subcategory");
     },
   });
-
+  const { mutate: deleteSubCategory } = useMutation({
+    mutationFn: removeSubCategory,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["login"] });
+      queryClient.invalidateQueries({ queryKey: ["sub-categories"] });
+      toast.success("Sub-category deleted succesfully!");
+    },
+    onError: (err: any) => {
+      console.error("Login Error:", err?.message || "Unknown Error");
+      toast.error("An error occured while trying to delete a subcategory.");
+    },
+  });
   const {
     isLoading: isLoadingSubCategories,
     data,
@@ -39,5 +54,6 @@ export function useSubCategories() {
     isCreatingSubCat,
     createSubCat,
     refetchSubCategories,
+    deleteSubCategory,
   };
 }

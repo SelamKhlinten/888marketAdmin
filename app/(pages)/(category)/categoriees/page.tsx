@@ -75,6 +75,9 @@ export default function Categories() {
                     Thumbnail
                   </th>
                   <th className="p-4 text-left font-medium text-sm text-gray-500">
+                    Icon
+                  </th>
+                  <th className="p-4 text-left font-medium text-sm text-gray-500">
                     Name
                   </th>
                   <th className="p-4 text-left font-medium text-sm text-gray-500">

@@ -16,24 +16,24 @@ export const getOrders = async () => {
   try {
     const { data, error } = await supabase.from("orders").select(`
       id,
-      name,
-      amount,
+      status,
+      created_at,
       customer:customers (
-        name
+        name,
+        email,
+        img_url
       ),
       product:products (
         name,
         price
       )
-      created_at,
-      status
     `);
     if (error) throw new Error(error?.message);
 
     return data;
   } catch (err) {
     console.error("Error fetching Orders:", err);
-    return [];
+    throw err;
   }
 };
 

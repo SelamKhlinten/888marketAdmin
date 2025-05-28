@@ -9,6 +9,7 @@ import { CustomerType } from "./type";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { format } from "path";
 import { formatDate } from "@/lib/utils";
+import { useCustomers } from "@/hooks/useCustomers";
 
 interface CustomerComponentProps {
   customer: CustomerType;
@@ -20,7 +21,8 @@ export default function Customer({
   customer,
   checked,
 }: CustomerComponentProps) {
-  const { imgUrl, name, createdAt, email, location, spent, status } = customer;
+  const { id, imgUrl, name, createdAt, email, location, spent, status } =
+    customer;
   const getStatusColor = (status: boolean) => {
     if (status) {
       return "bg-green-100 text-green-600 hover:bg-green-100";
@@ -32,6 +34,7 @@ export default function Customer({
     currency: "USD",
   }).format(spent);
   const createdAtFormatted = formatDate(createdAt);
+  const { deleteCustomer } = useCustomers();
 
   return (
     <tr className="border-b border-gray-100 relative">
@@ -62,27 +65,23 @@ export default function Customer({
         </Badge>
       </td>
       <td className="p-4">
-        <Button variant="ghost" size="icon">
-          <MoreVertical size={16} />
-        </Button>
-        {/* <div className="space-y-2 divide-y-2 flex flex-col gap-2 bg-[#dddddd68] p-10 absolute top-10 right-0 z-40 rounded-lg">
+        <div className="flex gap-2">
           <Button
             variant="outline"
             size="sm"
             className="text-red-600 border-red-200"
+            onClick={() => deleteCustomer(id)}
           >
-            <Trash size={16} className="mr-2" />
-            <span className="text-sm">Delete</span>
+            <Trash size={16} />
           </Button>
           <Button
             variant="outline"
             size="sm"
             className="text-blue-600 border-blue-200"
           >
-            <Pencil size={16} className="mr-2" />
-            <span className="text-sm">Edit</span>
+            <Pencil size={16} />
           </Button>
-        </div> */}
+        </div>
       </td>
     </tr>
   );

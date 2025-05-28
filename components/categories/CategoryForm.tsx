@@ -13,23 +13,30 @@ import { useParams } from "next/navigation";
 
 export default function CategoryForm() {
   const { categories } = useCategories();
+  const { isCreatingCategory, createCagetory } = useCategories();
+
   const { id } = useParams();
   const category = categories?.find((scat) => scat.id === id);
+
   const thumbnail = useRef<HTMLInputElement>(null);
+  const [thumbnailFile, setThumbnailFile] = useState<any | null>(null);
+  const icon = useRef<HTMLInputElement>(null);
+  const [iconFile, setIconFile] = useState<any | null>(null);
+
   const { register, handleSubmit } = useForm({
     defaultValues: category,
   });
-  const [thumbnailFile, setThumbnailFile] = useState<any | null>(null);
   const onSubmit = (data: any) => {
     const { name } = data;
     const img = thumbnailFile?.file;
+    const icon = iconFile?.file;
     const categoryData = {
       name,
       img,
+      icon,
     };
     createCagetory(categoryData);
   };
-  const { isCreatingCategory, createCagetory } = useCategories();
 
   return (
     <div className="max-w-5xl p-6 bg-white">
@@ -76,9 +83,9 @@ export default function CategoryForm() {
                     Category Icon
                   </Label>
                   <div className="flex items-center gap-4">
-                    {thumbnailFile?.url ? (
+                    {iconFile?.url ? (
                       <Image
-                        src={thumbnailFile.url || "/images/placeholder.png"}
+                        src={iconFile.url || "/images/placeholder.png"}
                         alt="Thumbnail"
                         width={200}
                         height={200}
@@ -89,7 +96,7 @@ export default function CategoryForm() {
                         className="border border-gray-200 rounded-lg p-2 min-w-[80px] h-[80px] flex items-center justify-center bg-gray-50"
                         onClick={(e) => {
                           e.preventDefault();
-                          thumbnail.current?.click();
+                          icon.current?.click();
                         }}
                       >
                         <Plus className="h-6 w-6 text-gray-400" />
@@ -100,12 +107,12 @@ export default function CategoryForm() {
                       hidden
                       type="file"
                       accept="image/*"
-                      ref={thumbnail}
+                      ref={icon}
                       onChange={(e) => {
                         const files = Array.from(e.target.files || []).map(
                           (file) => ({ file, url: URL.createObjectURL(file) })
                         );
-                        setThumbnailFile(files[0]);
+                        setIconFile(files[0]);
                       }}
                     />
                   </div>

@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  ArchiveX,
-  Filter,
-  Plus,
-  Search,
-  Trash2,
-} from "lucide-react";
+import { ArchiveX, Filter, Plus, Search, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -19,10 +13,23 @@ import Error from "@/components/Error";
 import Empty from "@/components/Empty";
 
 export default function Products() {
-  const { products, isLoadingProducts, isError, refetchProducts } =
-    useProducts();
+  const {
+    products,
+    isLoadingProducts,
+    isError,
+    refetchProducts,
+    deleteProduct,
+  } = useProducts();
   const router = useRouter();
   const [isAllSelected, setIsSelectedAll] = useState<boolean>(false);
+  const deleteList: number[] = [];
+  
+  const removeFromDeleteList = (id: number) => {
+    const index = deleteList.indexOf(id);
+    if (index > -1) {
+      deleteList.splice(index, 1);
+    }
+  };
 
   return (
     <main className="p-6">
@@ -139,6 +146,8 @@ export default function Products() {
                       key={product.id}
                       product={product as ProductTypes}
                       checked={isAllSelected}
+                      removeFromDeleteList={removeFromDeleteList}
+                      deleteProduct={deleteProduct}
                     />
                   ))
                 )}

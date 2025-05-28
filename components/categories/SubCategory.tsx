@@ -1,10 +1,11 @@
 import React from "react";
 import Image from "next/image";
-import { MoreVertical } from "lucide-react";
+import { MoreVertical, Pencil, Trash } from "lucide-react";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "../ui/button";
 import { SubCategoryType } from "./type";
+import { useSubCategories } from "@/hooks/useSubCategories";
 
 interface SubCategoryProps {
   subCategory: SubCategoryType;
@@ -14,10 +15,13 @@ interface SubCategoryProps {
 
 export default function Category({ subCategory, checked }: SubCategoryProps) {
   const {
+    id,
     imgUrl,
     name,
     category: { name: categoryName },
   } = subCategory;
+
+  const { deleteSubCategory } = useSubCategories();
   return (
     <tr className="border-b border-gray-100">
       <td className="p-4">
@@ -41,9 +45,23 @@ export default function Category({ subCategory, checked }: SubCategoryProps) {
       <td className="p-4 text-sm">{name}</td>
       <td className="p-4 text-sm">{categoryName}</td>
       <td className="p-4">
-        <Button variant="ghost" size="icon">
-          <MoreVertical size={16} />
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-red-600 border-red-200"
+            onClick={() => deleteSubCategory(id)}
+          >
+            <Trash size={16} />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-blue-600 border-blue-200"
+          >
+            <Pencil size={16} />
+          </Button>
+        </div>
       </td>
     </tr>
   );

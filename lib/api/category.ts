@@ -6,7 +6,8 @@ export const getCategories = async () => {
     const { data, error } = await supabase.from("categories").select(`
       id,
       name,
-      img_url
+      img_url,
+      icon_url
     `);
     if (error) throw new Error(error?.message);
 
@@ -19,13 +20,13 @@ export const getCategories = async () => {
 
 export const postCategory = async (category: any) => {
   try {
-    const { name, img } = category;
-    console.log(name, img);
+    const { name, img, icon } = category;
     const img_url = await uploadImage(img, "categories");
+    const icon_url = await uploadImage(icon, "categories");
     console.log(img_url);
     const { data, error } = await supabase
       .from("categories")
-      .insert([{ name, img_url }])
+      .insert([{ name, img_url, icon_url }])
       .select();
 
     if (error) throw new Error(error?.message);
@@ -37,7 +38,7 @@ export const postCategory = async (category: any) => {
   }
 };
 
-export const deleteCategory = async (id: string) => {
+export const deleteCategory = async (id: number) => {
   try {
     const { error } = await supabase.from("categories").delete().eq("id", id);
 
@@ -46,6 +47,7 @@ export const deleteCategory = async (id: string) => {
     return true;
   } catch (err) {
     console.error("Error deleting category:", err);
+    throw err;
   }
 };
 

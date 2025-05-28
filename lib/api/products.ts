@@ -65,17 +65,18 @@ export const postProduct = async (product: any) => {
     return data;
   } catch (err: any) {
     console.error(err.message);
+    throw err;
   }
 };
 
-export const deleteProduct = async (id: string) => {
+export const deleteProduct = async (id: number) => {
   try {
     const { error } = await supabase.from("products").delete().eq("id", id);
     if (error) throw new Error(error?.message);
     return true;
   } catch (err) {
     console.error("Error deleting product:", err);
-    return false;
+    throw err;
   }
 };
 
@@ -108,6 +109,6 @@ export const updateProduct = async (product: any) => {
     return data;
   } catch (err) {
     console.error("Error updating product:", err);
-    return false;
+    throw err;
   }
 };

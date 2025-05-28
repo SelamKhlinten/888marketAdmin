@@ -1,7 +1,12 @@
-import { getCategories, postCategory } from "@/lib/api/category";
-import camelCase from "@/utils/camelCase";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+
+import {
+  getCategories,
+  postCategory,
+  deleteCategory as removeCategories,
+} from "@/lib/api/category";
+import camelCase from "@/utils/camelCase";
 
 export function useCategories() {
   const queryClient = useQueryClient();
@@ -34,12 +39,25 @@ export function useCategories() {
     return camelCase(category);
   });
 
+  const { mutate: deleteCategory } = useMutation({
+    mutationFn: removeCategories,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      toast.success("Product succesfully deleted.");
+    },
+    onError: (err: any) => {
+      console.error("Login Error:", err?.message || "Unknown Error");
+      toast.error("An error occured while trying to delete the product.");
+    },
+  });
+
   return {
     isLoadingCategories,
     categories,
     isError,
-    createCagetory,
     isCreatingCategory,
+    createCagetory,
     refetchCategories,
+    deleteCategory,
   };
 }
