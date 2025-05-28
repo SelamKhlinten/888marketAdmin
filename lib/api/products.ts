@@ -1,4 +1,4 @@
-import { uploadImages } from "@/utils/image";
+import { deleteImage, uploadImages } from "@/utils/image";
 import supabase from "../config/supabase";
 
 interface Product {
@@ -71,11 +71,53 @@ export const postProduct = async (product: any) => {
 
 export const deleteProduct = async (id: number) => {
   try {
+    const { data, error: fetchError } = await supabase
+      .from("products")
+      .select("img_urls")
+      .eq("id", id)
+      .single();
+    if (fetchError) throw new Error(fetchError?.message);
+    const imgUrls = data?.img_urls || [];
+    if (imgUrls.length) {
+      for (const url of imgUrls) {
+        await deleteImage(url, "products");
+      }
+    }
     const { error } = await supabase.from("products").delete().eq("id", id);
     if (error) throw new Error(error?.message);
     return true;
   } catch (err) {
     console.error("Error deleting product:", err);
+    throw err;
+  }
+};
+
+export const deleteMultipleProducts = async (ids: number[]) => {
+  try {
+    const { data, error: fetchError } = await supabase
+      .from("products")
+      .select("img_urls")
+      .in("id", ids);
+    if (fetchError) throw new Error(fetchError?.message);
+
+    for (const product of data || []) {
+      const imgUrls = product.img_urls || [];
+      if (imgUrls.length) {
+        for (const url of imgUrls) {
+          await deleteImage(url, "products");
+        }
+      }
+    }
+
+    const { data: deletedProducts, error } = await supabase
+      .from("products")
+      .delete()
+      .in("id", ids)
+      .select();
+    if (error) throw new Error(error?.message);
+    return deletedProducts;
+  } catch (err) {
+    console.error("Error deleting multiple products:", err);
     throw err;
   }
 };

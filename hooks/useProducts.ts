@@ -1,4 +1,5 @@
 import {
+  deleteMultipleProducts,
   getProducts,
   postProduct,
   deleteProduct as removeProduct,
@@ -24,15 +25,29 @@ export function useProducts() {
 
   const { mutate: deleteProduct, isPending: isDeletingProduct } = useMutation({
     mutationFn: removeProduct,
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
-      toast.success("Product succesfully deleted.");
+      toast.success(`"Product succesfully deleted."`);
     },
     onError: (err: any) => {
       console.error("Login Error:", err?.message || "Unknown Error");
       toast.error("An error occured while trying to delete the product.");
     },
   });
+
+  const { mutate: deleteProducts, isPending: isDeletingProducts } = useMutation(
+    {
+      mutationFn: deleteMultipleProducts,
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["products"] });
+        toast.success(`${data?.length} Products succesfully deleted.`);
+      },
+      onError: (err: any) => {
+        console.error("Login Error:", err?.message || "Unknown Error");
+        toast.error("An error occured while trying to delete the products.");
+      },
+    }
+  );
 
   const {
     isLoading: isLoadingProducts,
@@ -51,6 +66,9 @@ export function useProducts() {
     createProduct,
     refetchProducts,
     deleteProduct,
+    deleteProducts,
+    isDeletingProducts,
+    isDeletingProduct,
     isLoadingProducts,
     isCreatingProduct,
     products,

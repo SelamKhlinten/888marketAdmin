@@ -11,6 +11,9 @@ import { useRouter } from "next/navigation";
 import ProductTypes from "@/components/products/type";
 import Error from "@/components/Error";
 import Empty from "@/components/Empty";
+import Modal from "@/components/Modal";
+
+// Adjust the import path as needed
 
 export default function Products() {
   const {
@@ -18,17 +21,22 @@ export default function Products() {
     isLoadingProducts,
     isError,
     refetchProducts,
-    deleteProduct,
+    deleteProducts,
   } = useProducts();
   const router = useRouter();
   const [isAllSelected, setIsSelectedAll] = useState<boolean>(false);
-  const deleteList: number[] = [];
-  
+  const [deleteList, setDeleteList] = useState<number[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+
   const removeFromDeleteList = (id: number) => {
-    const index = deleteList.indexOf(id);
-    if (index > -1) {
-      deleteList.splice(index, 1);
-    }
+    setDeleteList((prevList) => prevList.filter((item) => item !== id));
+    if (deleteList.length === 1) setIsSelectedAll(false);
+  };
+
+  const handleDelete = () => {
+    deleteProducts(deleteList);
+    setDeleteList([]);
+    setIsModalVisible(false);
   };
 
   return (
@@ -67,6 +75,7 @@ export default function Products() {
               variant="outline"
               size="sm"
               className="text-red-600 border-red-200"
+              onClick={() => setIsModalVisible(true)}
             >
               <Trash2 size={16} className="mr-2" /> Delete
             </Button>
@@ -147,7 +156,6 @@ export default function Products() {
                       product={product as ProductTypes}
                       checked={isAllSelected}
                       removeFromDeleteList={removeFromDeleteList}
-                      deleteProduct={deleteProduct}
                     />
                   ))
                 )}
@@ -156,6 +164,15 @@ export default function Products() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Modal */}
+      <Modal
+        isVisible={isModalVisible}
+        title="Confirm Deletion"
+        description="Are you sure you want to delete the selected products? This action cannot be undone."
+        onConfirm={handleDelete}
+        onCancel={() => setIsModalVisible(false)}
+      />
     </main>
   );
 }

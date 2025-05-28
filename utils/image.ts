@@ -46,3 +46,22 @@ export const uploadImage = async (
     throw err;
   }
 };
+
+export const deleteImage = async (imgUrl: string, bucket: string) => {
+  // Remove the URL prefix to get the path
+  const filePath = imgUrl.replace(
+    "https://your-project.supabase.co/storage/v1/object/public/",
+    ""
+  );
+
+  try {
+    const { error } = await supabase.storage.from(bucket).remove([filePath]);
+
+    if (error) throw error;
+
+    return true;
+  } catch (err) {
+    console.error("Delete image error:", err);
+    throw err;
+  }
+};

@@ -8,19 +8,21 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "../ui/button";
 import ProductTypes from "./type";
 import { Badge } from "@/components/ui/badge";
+import { useRouter } from "next/navigation";
+import { useProducts } from "@/hooks/useProducts";
+import Modal from "../Modal";
+import { set } from "react-hook-form";
 
 interface ProductComponentProps {
   product: ProductTypes;
   key: number;
   checked?: boolean;
-  deleteProduct?: (id: number) => void;
   removeFromDeleteList?: (id: number) => void;
 }
 
 export default function Product({
   product,
   checked,
-  deleteProduct,
   removeFromDeleteList,
 }: ProductComponentProps) {
   const {
@@ -32,10 +34,13 @@ export default function Product({
     price: { amount, currency },
     stock = 12,
   } = product;
+  const { deleteProduct, isDeletingProduct } = useProducts();
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const categoryName = category?.name ?? "";
   const subcategoryName = subcategory?.name ?? "";
   const [checkedState, setCheckedState] = useState(checked || false);
+  const router = useRouter();
 
   useEffect(() => {
     setCheckedState((state) => (checked !== undefined ? checked : state));
@@ -94,21 +99,38 @@ export default function Product({
             variant="outline"
             size="sm"
             className="text-red-600 border-red-200"
-            onClick={() => deleteProduct && deleteProduct(id)}
+            onClick={() => {
+              setIsModalVisible(true);
+            }}
           >
             <Trash size={16} />
-            {/* <span className="text-sm">Delete</span> */}
           </Button>
           <Button
             variant="outline"
             size="sm"
             className="text-blue-600 border-blue-200"
+            onClick={() => router.push(`/products/new?p_id=${id}`)}
           >
             <Pencil size={16} />
-            {/* <span className="text-sm">Edit</span> */}
           </Button>
         </div>
       </td>
+      {}
+
+      {isModalVisible && (
+        <td>
+          <Modal
+            isVisible={isModalVisible}
+            title="Confirm Deletion"
+            description="Are you sure you want to delete the product? This action cannot be undone."
+            onConfirm={() => {
+              deleteProduct(id);
+            }}
+            onCancel={() => setIsModalVisible(false)}
+            isLoading={isDeletingProduct}
+          />
+        </td>
+      )}
     </tr>
   );
 }
