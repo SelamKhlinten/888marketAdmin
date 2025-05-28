@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -49,11 +49,16 @@ export function LoginPage({ onLogin }: LoginPageProps) {
 
   const onSubmit = (data: LoginFormInputs) => {
     login(data);
-    if (data.email === "yona@example.com") {
-      router.push("/dashboard");
-      toast.success("Login Success");
-    }
   };
+  const accessToken = localStorage.getItem("access_token");
+
+  useEffect(() => {
+    if (accessToken) {
+      toast.success("welcome Back!");
+      router.replace("/dashboard");
+    }
+  }, []);
+  if (accessToken) return null;
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 bg-[url('/img/admin-bg.svg')]">
@@ -93,6 +98,9 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                 id="email"
                 type="email"
                 placeholder="Enter Email Address"
+                className={`${
+                  errors.email ? "border-red-500 focus:ring-red-500" : ""
+                }`}
                 {...register("email", { required: "Email is required" })}
               />
               {errors.email && (
@@ -109,6 +117,9 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter Password"
+                  className={`${
+                    errors.password ? "border-red-500 focus:ring-red-500" : ""
+                  }`}
                   {...register("password", {
                     required: "Password is required",
                   })}

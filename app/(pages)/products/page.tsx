@@ -3,7 +3,6 @@
 import {
   ArchiveX,
   Filter,
-  MoreVertical,
   Plus,
   Search,
   Trash2,
@@ -34,7 +33,7 @@ export default function Products() {
         </div>
         <Button
           className="bg-blue-600 hover:bg-blue-700"
-          onClick={() => router.push("/product/new")}
+          onClick={() => router.replace("/products/new")}
         >
           <Plus className="mr-2 h-4 w-4" /> Add Product
         </Button>
@@ -125,7 +124,7 @@ export default function Products() {
                     <td colSpan={8}>
                       <Empty
                         title="No products available."
-                        icon={<ArchiveX size={40} className="text-blue-500" />}
+                        icon={<ArchiveX size={80} className="text-blue-500" />}
                         description="Get started by adding products."
                         action={{
                           label: "Add new Product",

@@ -66,11 +66,11 @@ export default function Product({ product, checked }: ProductComponentProps) {
           {stock > 20 ? "In stock" : stock === 0 ? "Out of stock" : "Low stock"}
         </Badge>
       </td>
-      {/* <td className="p-4">
+      <td className="p-4">
         <Button variant="ghost" size="icon">
           <MoreVertical size={16} />
         </Button>
-        <div className="space-y-2 divide-y-2 flex flex-col gap-2 bg-[#dddddd68] p-10 absolute top-10 right-0 z-40 rounded-lg">
+        {/* <div className="space-y-2 divide-y-2 flex flex-col gap-2 bg-[#dddddd68] p-10 absolute top-10 right-0 z-40 rounded-lg">
           <Button
             variant="outline"
             size="sm"
@@ -87,8 +87,8 @@ export default function Product({ product, checked }: ProductComponentProps) {
             <Pencil size={16} className="mr-2" />
             <span className="text-sm">Edit</span>
           </Button>
-        </div>
-      </td> */}
+        </div> */}
+      </td>
     </tr>
   );
 }

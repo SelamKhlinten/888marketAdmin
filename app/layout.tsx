@@ -56,7 +56,7 @@ export default function RootLayout({
                   </div>
                 </div>
               )}
-              <Toaster position="bottom-right" />
+              <Toaster position="top-center" />
             </AuthGuard>
           </AuthProvider>
         </ReactQueryProvider>

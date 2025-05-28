@@ -1,4 +1,3 @@
-import { getProducts, postProduct } from "@/lib/api/products";
 import camelCase from "@/utils/camelCase";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -6,6 +5,7 @@ import { toast } from "sonner";
 // to avoid naming conflict
 import {
   createOrder as crOrder,
+  getOrders,
   deleteOrder as removeOrder,
 } from "@/lib/api/order";
 
@@ -40,17 +40,19 @@ export function useOrders() {
     isLoading: isLoadingOrders,
     data,
     isError,
+    refetch: refetchOrders,
   } = useQuery({
     queryKey: ["orders"],
-    queryFn: getProducts,
+    queryFn: getOrders,
   });
-  const orders = data?.map((product: any) => {
-    return camelCase(product);
+  const orders = data?.map((order: any) => {
+    return camelCase(order);
   });
 
   return {
     createCustomer,
     deleteOrder,
+    refetchOrders,
     isLoadingOrders,
     isCreatingOrder,
     isDeletingOrder,

@@ -67,7 +67,7 @@ export default function SidebarCmzed() {
           label="Main"
           childLinks={[
             {
-              href: "dashboard",
+              href: "/dashboard",
               label: "Dashboard",
               icon: <LayoutGrid size={20} />,
             },
@@ -79,7 +79,7 @@ export default function SidebarCmzed() {
             {
               label: "Products",
               icon: <ShoppingBag size={20} />,
-              href: "products",
+              href: "/products",
             },
             {
               label: "Categories",
@@ -96,7 +96,7 @@ export default function SidebarCmzed() {
           label="Order Managment"
           childLinks={[
             {
-              href: "orders",
+              href: "/orders",
               label: "Orders",
               icon: <ShoppingCart size={20} />,
             },
@@ -107,7 +107,7 @@ export default function SidebarCmzed() {
           label="Customer Managment"
           childLinks={[
             {
-              href: "customers",
+              href: "/customers",
               label: "Customers",
               icon: <Users size={20} />,
             },
@@ -119,7 +119,7 @@ export default function SidebarCmzed() {
           label="Settings"
           childLinks={[
             {
-              href: "settings",
+              href: "/settings",
               label: "Settings",
               icon: <SettingsIcon size={20} />,
             },
@@ -133,7 +133,7 @@ export default function SidebarCmzed() {
             {
               label: "Shops",
               icon: <ShoppingBag size={20} />,
-              href: "shops",
+              href: "/shops",
             },
           ]}
         />

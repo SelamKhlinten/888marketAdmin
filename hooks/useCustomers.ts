@@ -2,7 +2,7 @@ import { getProducts, postProduct } from "@/lib/api/products";
 import camelCase from "@/utils/camelCase";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { createCustomer as crCustomer } from "@/lib/api/customer";
+import { createCustomer as crCustomer, getCustomers } from "@/lib/api/customer";
 
 export function useCustomers() {
   const queryClient = useQueryClient();
@@ -39,17 +39,20 @@ export function useCustomers() {
     isLoading: isLoadingCustomers,
     data,
     isError,
+    refetch: refetchCustomers,
   } = useQuery({
     queryKey: ["customers"],
-    queryFn: getProducts,
+    queryFn: getCustomers,
   });
-  const customers = data?.map((product: any) => {
-    return camelCase(product);
+  console.log(data);
+  const customers = data?.map((customer: any) => {
+    return camelCase(customer);
   });
 
   return {
     createCustomer,
     deleteCustomer,
+    refetchCustomers,
     isLoadingCustomers,
     isCreatingCustomer,
     isDeletingCustomer,

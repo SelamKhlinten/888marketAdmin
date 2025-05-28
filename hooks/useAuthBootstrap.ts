@@ -19,26 +19,32 @@ export function useAuthBootstrap() {
         const session = data.session;
 
         if (!session) {
+          console.log("there is no session");
           setAuthenticated(false);
           router.push("/login");
         } else {
           // Check if access token is expired
+          console.log("there is a session");
           const expiresAt = session.expires_at; // unix timestamp in seconds
           const now = Math.floor(Date.now() / 1000);
 
           if (expiresAt && expiresAt < now) {
+            console.log("access token is expired use refresh token");
             // Access token expired, try to refresh
             const { data: refreshedData, error: refreshError } =
               await supabase.auth.refreshSession();
 
             if (refreshError || !refreshedData.session) {
+              console.log("refresh token is also expired");
               setAuthenticated(false);
               router.push("/login");
             } else {
+              console.log("user authenticated");
               setAuthenticated(true);
             }
           } else {
             // Access token valid
+            console.log("access token exists and user authenticated");
             setAuthenticated(true);
           }
         }

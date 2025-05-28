@@ -105,7 +105,7 @@ export default function Categories() {
                     <td colSpan={7}>
                       <Empty
                         title="No categories available."
-                        icon={<ArchiveX size={40} className="text-blue-500" />}
+                        icon={<ArchiveX size={80} className="text-blue-500" />}
                         description="Get started by adding a new category."
                         action={{
                           label: "Add new Category",

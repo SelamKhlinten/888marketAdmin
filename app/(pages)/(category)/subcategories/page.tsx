@@ -109,7 +109,7 @@ export default function SubCategories() {
                     <td colSpan={7}>
                       <Empty
                         title="No sub-categories available."
-                        icon={<ArchiveX size={40} className="text-blue-500" />}
+                        icon={<ArchiveX size={80} className="text-blue-500" />}
                         description="Get started by adding sub-categories."
                         action={{
                           label: "Add new sub-category",

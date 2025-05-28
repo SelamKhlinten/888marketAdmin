@@ -3,20 +3,14 @@ import supabase from "../config/supabase";
 
 export const getCustomers = async () => {
   try {
-    const { data, error } = await supabase.from("customers").select(`
-      id,
-      name,
-      location,
-      orders,
-      status,
-    `);
+    const { data, error } = await supabase.from("customers").select(`*`);
 
     if (error) throw new Error(error?.message);
 
     return data;
   } catch (err) {
     console.error("Error fetching customers:", err);
-    return [];
+    throw err;
   }
 };
 
@@ -47,7 +41,7 @@ export const createCustomer = async (product: any) => {
     return data;
   } catch (err: any) {
     console.error(err.message);
-    return err;
+    throw err;
   }
 };
 
@@ -58,7 +52,7 @@ export const deleteCustomer = async (id: string) => {
     return true;
   } catch (err) {
     console.error("Error deleting product:", err);
-    return err;
+    throw err;
   }
 };
 
@@ -91,6 +85,6 @@ export const updateCustomer = async (product: any) => {
     return data;
   } catch (err) {
     console.error("Error updating product:", err);
-    return err;
+    throw err;
   }
 };

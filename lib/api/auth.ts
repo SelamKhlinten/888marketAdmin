@@ -24,14 +24,10 @@ export const loginUser = async ({ email, password }: LoginCredentials) => {
       localStorage.setItem("refresh_token", refreshToken);
 
       return session.user;
-    } else {
-      console.warn("No session returned");
-      return null;
     }
   } catch (err: any) {
     console.error("Login error:", err.message);
-    alert("Login failed: " + err.message);
-    return null;
+    throw err;
   }
 };
 

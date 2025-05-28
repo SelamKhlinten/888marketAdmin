@@ -21,8 +21,7 @@ export default function SideBarLinksContainer({
   label,
   childLinks,
 }: SideBarLinkProps) {
-  const pathName = usePathname();
-  const activeTab = pathName.slice(pathName.indexOf("/") + 1);
+  const activeTab = usePathname();
   return (
     <div>
       <label className="px-3 text-[#8a94a6] mb-2 inline-block uppercase text-[11px] tracking-wider">

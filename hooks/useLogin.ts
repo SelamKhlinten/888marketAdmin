@@ -20,15 +20,15 @@ export function useLogin() {
     error,
   } = useMutation({
     mutationFn: loginUser,
-    onSuccess: (dataSuccess) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["login"] });
       setAuthenticated(true);
       router.replace("/dashboard");
-      toast.success("Loged in successfully");
+      toast.success("Logged in successfully");
     },
     onError: (err: any) => {
-      toast.error("Credentials are incorrect");
-      console.log(err.message);
+      toast.error("Incorrect credentials. Please try again.");
+      // router.push("/login");
     },
   });
 
