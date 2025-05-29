@@ -90,35 +90,37 @@ export default function Categories() {
             <table className="w-full">
               {!isError && categories?.length ? (
                 <thead>
-                  <tr className="border-b border-gray-100">
-                    <th className="w-10 p-4">
-                      <Checkbox
-                        onClick={() => {
-                          setIsSelectedAll((state) => !state);
-                          if (!isAllSelected) {
-                            setDeleteList(
-                              categories?.map((category) => category.id) || []
-                            );
-                          } else {
-                            setDeleteList([]);
-                          }
-                        }}
-                        checked={isAllSelected}
-                      />
-                    </th>
-                    <th className="p-4 text-left font-medium text-sm text-gray-500">
-                      Thumbnail
-                    </th>
-                    <th className="p-4 text-left font-medium text-sm text-gray-500">
-                      Icon
-                    </th>
-                    <th className="p-4 text-left font-medium text-sm text-gray-500">
-                      Name
-                    </th>
-                    <th className="p-4 text-left font-medium text-sm text-gray-500">
-                      Actions
-                    </th>
-                  </tr>
+                  {!isError && (
+                    <tr className="border-b border-gray-100">
+                      <th className="w-10 p-4">
+                        <Checkbox
+                          onClick={() => {
+                            setIsSelectedAll((state) => !state);
+                            if (!isAllSelected) {
+                              setDeleteList(
+                                categories?.map((category) => category.id) || []
+                              );
+                            } else {
+                              setDeleteList([]);
+                            }
+                          }}
+                          checked={isAllSelected}
+                        />
+                      </th>
+                      <th className="p-4 text-left font-medium text-sm text-gray-500">
+                        Thumbnail
+                      </th>
+                      <th className="p-4 text-left font-medium text-sm text-gray-500">
+                        Icon
+                      </th>
+                      <th className="p-4 text-left font-medium text-sm text-gray-500">
+                        Name
+                      </th>
+                      <th className="p-4 text-left font-medium text-sm text-gray-500">
+                        Actions
+                      </th>
+                    </tr>
+                  )}
                 </thead>
               ) : null}
               <thead>

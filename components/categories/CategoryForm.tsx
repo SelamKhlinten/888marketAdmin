@@ -44,7 +44,7 @@ export default function CategoryForm() {
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
             <Link
-              href={"/categories"}
+              href={"/categoriees"}
               className="size-10 rounded-full hover:bg-blue-100 grid place-items-center"
             >
               <ArrowLeft className="h-5 w-5 text-gray-700" />
