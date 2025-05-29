@@ -51,7 +51,7 @@ export default function SubCategories() {
         </div>
         <Button
           className="bg-blue-600 hover:bg-blue-700"
-          onClick={() => router.push("/categories/new")}
+          onClick={() => router.push("/subcategories/new")}
         >
           <Plus className="mr-2 h-4 w-4 capitalize" /> Create New
         </Button>
@@ -60,7 +60,7 @@ export default function SubCategories() {
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <div className="flex items-center gap-4">
             <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500"  />
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
               <input
                 type="text"
                 placeholder="Search categories..."
