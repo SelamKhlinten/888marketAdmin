@@ -74,7 +74,7 @@ export default function Categories() {
               onClick={() => setIsModalVisible(true)}
               disabled={isError || isLoadingCategories || !categories?.length}
             >
-              <Trash2 size={16} className="mr-2"  /> Delete
+              <Trash2 size={16} className="mr-2" /> Delete
             </Button>
             <Button
               variant="outline"
