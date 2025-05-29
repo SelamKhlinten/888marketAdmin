@@ -29,7 +29,7 @@ export function useCategories() {
     }
   );
 
-  const { mutate: deleteCateogries, isPending: isDeletingCateogires } =
+  const { mutate: deleteCateogries, isPending: isDeletingCategories } =
     useMutation({
       mutationFn: deleteMultipleCategories,
       onSuccess: (data: any[]) => {
@@ -73,7 +73,7 @@ export function useCategories() {
     isLoadingCategories,
     categories,
     isError,
-    isDeletingCateogires,
+    isDeletingCategories,
     isDeletingCategory,
     isCreatingCategory,
     createCagetory,

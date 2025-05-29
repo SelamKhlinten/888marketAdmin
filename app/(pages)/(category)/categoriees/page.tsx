@@ -23,6 +23,7 @@ export default function Categories() {
     isLoadingCategories,
     refetchCategories,
     deleteCateogries,
+    isDeletingCategories,
   } = useCategories();
   const [isAllSelected, setIsSelectedAll] = useState<boolean>(false);
   const [deleteList, setDeleteList] = useState<number[]>([]);
@@ -123,37 +124,6 @@ export default function Categories() {
                   )}
                 </thead>
               ) : null}
-              <thead>
-                <tr className="border-b border-gray-100">
-                  <th className="w-10 p-4">
-                    <Checkbox
-                      onClick={() => {
-                        setIsSelectedAll((state) => !state);
-                        if (!isAllSelected) {
-                          setDeleteList(
-                            categories?.map((category) => category.id) || []
-                          );
-                        } else {
-                          setDeleteList([]);
-                        }
-                      }}
-                      checked={isAllSelected}
-                    />
-                  </th>
-                  <th className="p-4 text-left font-medium text-sm text-gray-500">
-                    Thumbnail
-                  </th>
-                  <th className="p-4 text-left font-medium text-sm text-gray-500">
-                    Icon
-                  </th>
-                  <th className="p-4 text-left font-medium text-sm text-gray-500">
-                    Name
-                  </th>
-                  <th className="p-4 text-left font-medium text-sm text-gray-500">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
               <tbody>
                 {isLoadingCategories ? (
                   <tr>
@@ -208,6 +178,7 @@ export default function Categories() {
           description="Are you sure you want to delete the selected categories?"
           onConfirm={handleDelete}
           onCancel={() => setIsModalVisible(false)}
+          isLoading={isDeletingCategories}
         />
       )}
     </main>

@@ -25,6 +25,7 @@ export default function SubCategories() {
     isLoadingSubCategories,
     refetchSubCategories,
     deleteSubCateogries,
+    isDeletingSubCategories,
   } = useSubCategories();
   const [isAllSelected, setIsSelectedAll] = useState<boolean>(false);
   const [deleteList, setDeleteList] = useState<number[]>([]);
@@ -189,6 +190,7 @@ export default function SubCategories() {
           description="Are you sure you want to delete the selected sub-categories?"
           onConfirm={handleDelete}
           onCancel={() => setIsModalVisible(false)}
+          isLoading={isDeletingSubCategories}
         />
       )}
     </main>

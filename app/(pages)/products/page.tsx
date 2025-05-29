@@ -20,6 +20,7 @@ export default function Products() {
     products,
     isLoadingProducts,
     isError,
+    isDeletingProducts,
     refetchProducts,
     deleteProducts,
   } = useProducts();
@@ -195,6 +196,7 @@ export default function Products() {
         confirmLable="Delete"
         onConfirm={handleDelete}
         onCancel={() => setIsModalVisible(false)}
+        isLoading={isDeletingProducts}
       />
     </main>
   );
