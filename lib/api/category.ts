@@ -42,18 +42,26 @@ export const deleteCategory = async (id: number) => {
   try {
     const { data, error: fetchError } = await supabase
       .from("categories")
-      .select("img_urls")
+      .select("img_url, icon_url")
       .eq("id", id)
       .single();
-    if (fetchError) throw new Error(fetchError?.message);
-    const imgUrls = data?.img_urls || [];
-    if (imgUrls.length) {
-      for (const url of imgUrls) {
-        await deleteImage(url, "categories");
-      }
+
+    if (fetchError) throw new Error(fetchError.message);
+
+    const imgUrl = data?.img_url;
+    const iconUrl = data?.icon_url;
+
+    if (imgUrl) {
+      await deleteImage(imgUrl, "categories");
     }
+
+    if (iconUrl) {
+      await deleteImage(iconUrl, "categories");
+    }
+
     const { error } = await supabase.from("categories").delete().eq("id", id);
-    if (error) throw new Error(error?.message);
+    if (error) throw new Error(error.message);
+
     return true;
   } catch (err) {
     console.error("Error deleting category:", err);
@@ -68,6 +76,7 @@ export const deleteMultipleCategories = async (ids: number[]) => {
       .from("categories")
       .select("icon_url, img_url")
       .in("id", ids);
+    console.log(data);
 
     if (fetchError) throw new Error(fetchError.message);
 

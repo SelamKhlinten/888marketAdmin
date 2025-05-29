@@ -60,11 +60,11 @@ export function useCategories() {
       mutationFn: removeCategories,
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["categories"] });
-        toast.success("Product succesfully deleted.");
+        toast.success("Category succesfully deleted.");
       },
       onError: (err: any) => {
         console.error("Login Error:", err?.message || "Unknown Error");
-        toast.error("An error occured while trying to delete the product.");
+        toast.error("An error occured while trying to delete the category.");
       },
     }
   );
