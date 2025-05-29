@@ -6,15 +6,18 @@ import {
 } from "@/lib/api/products";
 import camelCase from "@/utils/camelCase";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export function useProducts() {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const { mutate: createProduct, isPending: isCreatingProduct } = useMutation({
     mutationFn: postProduct,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
+      router.push("/products");
       toast.success("Product succesfully created.");
     },
     onError: (err: any) => {
@@ -48,7 +51,17 @@ export function useProducts() {
       },
     }
   );
-
+  const { mutate: updateProduct, isPending: isUpdating } = useMutation({
+    mutationFn: deleteMultipleProducts,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      toast.success(`${data?.length} Products succesfully deleted.`);
+    },
+    onError: (err: any) => {
+      console.error("Login Error:", err?.message || "Unknown Error");
+      toast.error("An error occured while trying to delete the products.");
+    },
+  });
   const {
     isLoading: isLoadingProducts,
     data,
@@ -67,6 +80,8 @@ export function useProducts() {
     refetchProducts,
     deleteProduct,
     deleteProducts,
+    updateProduct,
+    isUpdating,
     isDeletingProducts,
     isDeletingProduct,
     isLoadingProducts,

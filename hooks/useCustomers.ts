@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   createCustomer as crCustomer,
+  deleteMultipleCustomers,
   getCustomers,
   deleteCustomer as removeCustomer,
 } from "@/lib/api/customer";
@@ -37,7 +38,18 @@ export function useCustomers() {
       },
     }
   );
-
+  const { mutate: deleteCustomers, isPending: isDeletingCustomers } =
+    useMutation({
+      mutationFn: deleteMultipleCustomers,
+      onSuccess: (data: any[]) => {
+        queryClient.invalidateQueries({ queryKey: ["customers"] });
+        toast.success(`${data?.length ?? 0} Customers successfully deleted.`);
+      },
+      onError: (err: any) => {
+        console.error("Bulk Delete Error:", err?.message || "Unknown Error");
+        toast.error("An error occurred while deleting multiple customers.");
+      },
+    });
   const {
     isLoading: isLoadingCustomers,
     data,
@@ -47,7 +59,6 @@ export function useCustomers() {
     queryKey: ["customers"],
     queryFn: getCustomers,
   });
-  console.log(data);
   const customers = data?.map((customer: any) => {
     return camelCase(customer);
   });
@@ -56,6 +67,8 @@ export function useCustomers() {
     createCustomer,
     deleteCustomer,
     refetchCustomers,
+    deleteCustomers,
+    isDeletingCustomers,
     isLoadingCustomers,
     isCreatingCustomer,
     isDeletingCustomer,

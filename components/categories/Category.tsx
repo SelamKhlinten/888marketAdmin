@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Pencil, Trash } from "lucide-react";
 
@@ -6,20 +8,40 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "../ui/button";
 import { CategoryType } from "./type";
 import { useCategories } from "@/hooks/useCategories";
+import Modal from "../Modal";
 
 interface CategoryProps {
   category: CategoryType;
-  key: string;
+  key: number;
   checked?: boolean;
+  removeFromDeleteList?: (id: number) => void;
 }
 
-export default function Category({ category, checked }: CategoryProps) {
-  const { deleteCategory } = useCategories();
+export default function Category({
+  category,
+  checked,
+  removeFromDeleteList,
+}: CategoryProps) {
+  const { deleteCategory, isDeletingCategory } = useCategories();
   const { imgUrl, name, iconUrl, id } = category;
+  const [checkedState, setCheckedState] = useState<boolean>(checked || false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  useEffect(() => {
+    setCheckedState((state) => (checked !== undefined ? checked : state));
+  }, [checked]);
+
   return (
     <tr className="border-b border-gray-100">
       <td className="p-4">
-        <Checkbox className="accent-blue-600" checked={checked} />
+        <Checkbox
+          className="accent-blue-600"
+          checked={checkedState}
+          onClick={() => {
+            setCheckedState((state) => !state);
+            if (checkedState) removeFromDeleteList?.(id);
+          }}
+        />
       </td>
       <td className="p-4">
         <div className="flex items-center gap-3">
@@ -52,10 +74,9 @@ export default function Category({ category, checked }: CategoryProps) {
             variant="outline"
             size="sm"
             className="text-red-600 border-red-200"
-            onClick={() => deleteCategory(id)}
+            onClick={() => setIsModalVisible(true)}
           >
             <Trash size={16} />
-            {/* <span className="text-sm">Delete</span> */}
           </Button>
           <Button
             variant="outline"
@@ -63,10 +84,24 @@ export default function Category({ category, checked }: CategoryProps) {
             className="text-blue-600 border-blue-200"
           >
             <Pencil size={16} />
-            {/* <span className="text-sm">Edit</span> */}
           </Button>
         </div>
       </td>
+      {isModalVisible && (
+        <td>
+          <Modal
+            isVisible={isModalVisible}
+            title="Confirm Deletion"
+            description="Are you sure you want to delete the product? This action cannot be undone."
+            confirmLable="Delete"
+            isLoading={isDeletingCategory}
+            onConfirm={() => {
+              deleteCategory(id);
+            }}
+            onCancel={() => setIsModalVisible(false)}
+          />
+        </td>
+      )}
     </tr>
   );
 }

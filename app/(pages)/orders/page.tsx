@@ -32,41 +32,48 @@ export default function OrderList() {
                 type="text"
                 placeholder="Search orders..."
                 className="pl-9 h-9 w-[250px] rounded-md border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={isError || isLoadingOrders || !orders?.length}
               />
             </div>
           </div>
-          <Button variant="outline" size="sm">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={isError || isLoadingOrders || !orders?.length}
+          >
             Export
           </Button>
         </CardHeader>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-100">
-                  <th className="p-4 text-left font-medium text-sm text-gray-500">
-                    Order ID
-                  </th>
-                  <th className="p-4 text-left font-medium text-sm text-gray-500">
-                    Customer
-                  </th>
-                  <th className="p-4 text-left font-medium text-sm text-gray-500">
-                    Product
-                  </th>
-                  <th className="p-4 text-left font-medium text-sm text-gray-500">
-                    Amount
-                  </th>
-                  <th className="p-4 text-left font-medium text-sm text-gray-500">
-                    Date
-                  </th>
-                  <th className="p-4 text-left font-medium text-sm text-gray-500">
-                    Status
-                  </th>
-                  <th className="p-4 text-left font-medium text-sm text-gray-500">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
+              {!isError && orders?.length ? (
+                <thead>
+                  <tr className="border-b border-gray-100">
+                    <th className="p-4 text-left font-medium text-sm text-gray-500">
+                      Order ID
+                    </th>
+                    <th className="p-4 text-left font-medium text-sm text-gray-500">
+                      Customer
+                    </th>
+                    <th className="p-4 text-left font-medium text-sm text-gray-500">
+                      Product
+                    </th>
+                    <th className="p-4 text-left font-medium text-sm text-gray-500">
+                      Amount
+                    </th>
+                    <th className="p-4 text-left font-medium text-sm text-gray-500">
+                      Date
+                    </th>
+                    <th className="p-4 text-left font-medium text-sm text-gray-500">
+                      Status
+                    </th>
+                    <th className="p-4 text-left font-medium text-sm text-gray-500">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+              ) : null}
               <tbody>
                 {isLoadingOrders ? (
                   <tr>

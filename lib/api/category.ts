@@ -1,4 +1,4 @@
-import { uploadImage } from "@/utils/image";
+import { deleteImage, uploadImage } from "@/utils/image";
 import supabase from "../config/supabase";
 
 export const getCategories = async () => {
@@ -40,13 +40,57 @@ export const postCategory = async (category: any) => {
 
 export const deleteCategory = async (id: number) => {
   try {
+    const { data, error: fetchError } = await supabase
+      .from("categories")
+      .select("img_urls")
+      .eq("id", id)
+      .single();
+    if (fetchError) throw new Error(fetchError?.message);
+    const imgUrls = data?.img_urls || [];
+    if (imgUrls.length) {
+      for (const url of imgUrls) {
+        await deleteImage(url, "categories");
+      }
+    }
     const { error } = await supabase.from("categories").delete().eq("id", id);
-
     if (error) throw new Error(error?.message);
-
     return true;
   } catch (err) {
     console.error("Error deleting category:", err);
+    throw err;
+  }
+};
+
+export const deleteMultipleCategories = async (ids: number[]) => {
+  try {
+    // Step 1: Fetch icon_url and img_url for each category
+    const { data, error: fetchError } = await supabase
+      .from("categories")
+      .select("icon_url, img_url")
+      .in("id", ids);
+
+    if (fetchError) throw new Error(fetchError.message);
+
+    // Step 2: Delete images from Supabase storage
+    for (const category of data || []) {
+      const urls = [category.icon_url, category.img_url].filter(Boolean); // filter out null/undefined
+      for (const url of urls) {
+        await deleteImage(url, "categories"); // Assumes 'categories' is the bucket or folder name
+      }
+    }
+
+    // Step 3: Delete categories from the table
+    const { data: deletedCategories, error } = await supabase
+      .from("categories")
+      .delete()
+      .in("id", ids)
+      .select();
+
+    if (error) throw new Error(error.message);
+
+    return deletedCategories;
+  } catch (err) {
+    console.error("Error deleting multiple categories:", err);
     throw err;
   }
 };

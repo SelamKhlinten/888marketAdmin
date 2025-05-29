@@ -8,6 +8,7 @@ interface ModalProps {
   title: string;
   description: string;
   isLoading?: boolean;
+  confirmLable?: string;
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -17,6 +18,7 @@ export default function Modal({
   title,
   description,
   isLoading,
+  confirmLable = "Confirm",
   onConfirm,
   onCancel,
 }: ModalProps) {
@@ -32,9 +34,10 @@ export default function Modal({
             Cancel
           </Button>
           <SubmitButton
-            label="Confirm"
+            label={confirmLable}
             onClick={onConfirm}
             className="!w-[100px] rounded-md bg-red-600 hover:bg-red-700 text-white p-0 min-w-[90px]"
+            isLoading={isLoading}
           />
         </div>
       </div>

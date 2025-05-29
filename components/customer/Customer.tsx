@@ -1,45 +1,63 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { MoreVertical, Pen, Pencil, Trash } from "lucide-react";
+import { Pencil, Trash } from "lucide-react";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "../ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CustomerType } from "./type";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { format } from "path";
 import { formatDate } from "@/lib/utils";
 import { useCustomers } from "@/hooks/useCustomers";
+import Modal from "../Modal";
 
 interface CustomerComponentProps {
   customer: CustomerType;
   key: number;
   checked?: boolean;
+  removeFromDeleteList?: (id: number) => void;
 }
 
 export default function Customer({
   customer,
   checked,
+  removeFromDeleteList,
 }: CustomerComponentProps) {
   const { id, imgUrl, name, createdAt, email, location, spent, status } =
     customer;
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [checkedState, setCheckedState] = useState(checked || false);
+
+  const { deleteCustomer, isDeletingCustomer } = useCustomers();
+
+  useEffect(() => {
+    setCheckedState((state) => (checked !== undefined ? checked : state));
+  }, [checked]);
+
   const getStatusColor = (status: boolean) => {
-    if (status) {
-      return "bg-green-100 text-green-600 hover:bg-green-100";
-    }
-    return "bg-red-100 text-red-600 hover:bg-red-100";
+    return status
+      ? "bg-green-100 text-green-600 hover:bg-green-100"
+      : "bg-red-100 text-red-600 hover:bg-red-100";
   };
+
   const spentFormatted = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
   }).format(spent);
+
   const createdAtFormatted = formatDate(createdAt);
-  const { deleteCustomer } = useCustomers();
 
   return (
     <tr className="border-b border-gray-100 relative">
       <td className="p-4">
-        <Checkbox checked={checked} />
+        <Checkbox
+          checked={checkedState}
+          onClick={() => {
+            setCheckedState((state) => !state);
+            if (checkedState) removeFromDeleteList?.(id);
+          }}
+        />
       </td>
       <td className="p-4">
         <div className="flex items-center gap-3">
@@ -61,7 +79,7 @@ export default function Customer({
       <td className="p-4 text-sm text-gray-500">{createdAtFormatted}</td>
       <td className="p-4">
         <Badge className={getStatusColor(status)}>
-          {customer.status ? "Active" : "Inactive"}
+          {status ? "Active" : "Inactive"}
         </Badge>
       </td>
       <td className="p-4">
@@ -70,7 +88,7 @@ export default function Customer({
             variant="outline"
             size="sm"
             className="text-red-600 border-red-200"
-            onClick={() => deleteCustomer(id)}
+            onClick={() => setIsModalVisible(true)}
           >
             <Trash size={16} />
           </Button>
@@ -83,6 +101,20 @@ export default function Customer({
           </Button>
         </div>
       </td>
+
+      {isModalVisible && (
+        <td>
+          <Modal
+            isVisible={isModalVisible}
+            title="Confirm Deletion"
+            description="Are you sure you want to delete this customer? This action cannot be undone."
+            confirmLable="Delete"
+            isLoading={isDeletingCustomer}
+            onConfirm={() => deleteCustomer(id)}
+            onCancel={() => setIsModalVisible(false)}
+          />
+        </td>
+      )}
     </tr>
   );
 }

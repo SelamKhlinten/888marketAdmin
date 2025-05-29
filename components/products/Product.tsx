@@ -11,7 +11,6 @@ import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
 import { useProducts } from "@/hooks/useProducts";
 import Modal from "../Modal";
-import { set } from "react-hook-form";
 
 interface ProductComponentProps {
   product: ProductTypes;
@@ -109,7 +108,7 @@ export default function Product({
             variant="outline"
             size="sm"
             className="text-blue-600 border-blue-200"
-            onClick={() => router.push(`/products/new?p_id=${id}`)}
+            onClick={() => router.push(`/products/new?pid=${id}`)}
           >
             <Pencil size={16} />
           </Button>
@@ -123,11 +122,12 @@ export default function Product({
             isVisible={isModalVisible}
             title="Confirm Deletion"
             description="Are you sure you want to delete the product? This action cannot be undone."
+            confirmLable="Delete"
+            isLoading={isDeletingProduct}
             onConfirm={() => {
               deleteProduct(id);
             }}
             onCancel={() => setIsModalVisible(false)}
-            isLoading={isDeletingProduct}
           />
         </td>
       )}

@@ -37,6 +37,7 @@ export default function Products() {
     deleteProducts(deleteList);
     setDeleteList([]);
     setIsModalVisible(false);
+    setIsSelectedAll(false);
   };
 
   return (
@@ -57,13 +58,19 @@ export default function Products() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm" className="gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              disabled={isError || isLoadingProducts || !products?.length}
+            >
               <Filter size={16} />
               Filter
             </Button>
             <div className="relative">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
               <input
+                disabled={isError || isLoadingProducts || !products?.length}
                 type="text"
                 placeholder="Search products..."
                 className="pl-9 h-9 w-[250px] rounded-md border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -76,10 +83,15 @@ export default function Products() {
               size="sm"
               className="text-red-600 border-red-200"
               onClick={() => setIsModalVisible(true)}
+              disabled={isError || isLoadingProducts || !products?.length}
             >
               <Trash2 size={16} className="mr-2" /> Delete
             </Button>
-            <Button variant="outline" size="sm">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={isError || isLoadingProducts || !products?.length}
+            >
               Export
             </Button>
           </div>
@@ -87,36 +99,46 @@ export default function Products() {
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-100">
-                  <th className="w-10 p-4">
-                    <Checkbox
-                      onClick={() => setIsSelectedAll((state) => !state)}
-                    />
-                  </th>
-                  <th className="p-4 text-left font-medium text-sm text-gray-500">
-                    Product
-                  </th>
-                  <th className="p-4 text-left font-medium text-sm text-gray-500">
-                    Category
-                  </th>
-                  <th className="p-4 text-left font-medium text-sm text-gray-500">
-                    Sub-Category
-                  </th>
-                  <th className="p-4 text-left font-medium text-sm text-gray-500">
-                    Price
-                  </th>
-                  <th className="p-4 text-left font-medium text-sm text-gray-500">
-                    Stock
-                  </th>
-                  <th className="p-4 text-left font-medium text-sm text-gray-500">
-                    Status
-                  </th>
-                  <th className="p-4 text-left font-medium text-sm text-gray-500">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
+              {!isError && products?.length ? (
+                <thead>
+                  <tr className="border-b border-gray-100">
+                    <th className="w-10 p-4">
+                      <Checkbox
+                        onClick={() => {
+                          setIsSelectedAll((state) => !state);
+                          if (!isAllSelected) {
+                            setDeleteList(
+                              products?.map((product) => product.id) || []
+                            );
+                          }
+                        }}
+                        checked={isAllSelected}
+                      />
+                    </th>
+                    <th className="p-4 text-left font-medium text-sm text-gray-500">
+                      Product
+                    </th>
+                    <th className="p-4 text-left font-medium text-sm text-gray-500">
+                      Category
+                    </th>
+                    <th className="p-4 text-left font-medium text-sm text-gray-500">
+                      Sub-Category
+                    </th>
+                    <th className="p-4 text-left font-medium text-sm text-gray-500">
+                      Price
+                    </th>
+                    <th className="p-4 text-left font-medium text-sm text-gray-500">
+                      Stock
+                    </th>
+                    <th className="p-4 text-left font-medium text-sm text-gray-500">
+                      Status
+                    </th>
+                    <th className="p-4 text-left font-medium text-sm text-gray-500">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+              ) : null}
               <tbody>
                 {isLoadingProducts ? (
                   <tr>
@@ -144,7 +166,7 @@ export default function Products() {
                         description="Get started by adding products."
                         action={{
                           label: "Add new Product",
-                          onClick: () => router.push("/product/new"),
+                          onClick: () => router.push("/products/new"),
                         }}
                       />
                     </td>
@@ -170,6 +192,7 @@ export default function Products() {
         isVisible={isModalVisible}
         title="Confirm Deletion"
         description="Are you sure you want to delete the selected products? This action cannot be undone."
+        confirmLable="Delete"
         onConfirm={handleDelete}
         onCancel={() => setIsModalVisible(false)}
       />

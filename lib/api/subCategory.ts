@@ -1,4 +1,4 @@
-import { uploadImage } from "@/utils/image";
+import { deleteImage, uploadImage } from "@/utils/image";
 import supabase from "../config/supabase";
 
 export const getSubCategories = async () => {
@@ -52,6 +52,40 @@ export const deleteSubCategory = async (id: number) => {
   } catch (err) {
     console.error("Error deleting category:", err);
     return err;
+  }
+};
+
+export const deleteMultipleSubCategories = async (ids: number[]) => {
+  try {
+    // Step 1: Fetch img_url for each subcategory
+    const { data, error: fetchError } = await supabase
+      .from("subcategories")
+      .select("img_url")
+      .in("id", ids);
+
+    if (fetchError) throw new Error(fetchError.message);
+
+    // Step 2: Delete image from Supabase storage
+    for (const subcategory of data || []) {
+      const url = subcategory.img_url;
+      if (url) {
+        await deleteImage(url, "subcategories"); // Adjust 'subcategories' as needed for your bucket/folder name
+      }
+    }
+
+    // Step 3: Delete subcategories from the table
+    const { data: deletedSubCategories, error } = await supabase
+      .from("subcategories")
+      .delete()
+      .in("id", ids)
+      .select();
+
+    if (error) throw new Error(error.message);
+
+    return deletedSubCategories;
+  } catch (err) {
+    console.error("Error deleting multiple subcategories:", err);
+    throw err;
   }
 };
 

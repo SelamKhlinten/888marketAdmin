@@ -13,13 +13,32 @@ import Category from "@/components/categories/Category";
 import Empty from "@/components/Empty";
 import Error from "@/components/Error";
 import { CategoryType } from "@/components/categories/type";
+import Modal from "@/components/Modal";
 
 export default function Categories() {
   const router = useRouter();
-
-  const { categories, isError, isLoadingCategories, refetchCategories } =
-    useCategories();
+  const {
+    categories,
+    isError,
+    isLoadingCategories,
+    refetchCategories,
+    deleteCateogries,
+  } = useCategories();
   const [isAllSelected, setIsSelectedAll] = useState<boolean>(false);
+  const [deleteList, setDeleteList] = useState<number[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+
+  const removeFromDeleteList = (id: number) => {
+    setDeleteList((prevList) => prevList.filter((item) => item !== id));
+    if (deleteList.length === 1) setIsSelectedAll(false);
+  };
+
+  const handleDelete = () => {
+    deleteCateogries(deleteList);
+    setDeleteList([]);
+    setIsModalVisible(false);
+    setIsSelectedAll(false);
+  };
 
   return (
     <main className="p-6">
@@ -35,7 +54,6 @@ export default function Categories() {
           <Plus className="mr-2 h-4 w-4 capitalize" /> Create New
         </Button>
       </div>
-
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <div className="flex items-center gap-4">
@@ -53,10 +71,16 @@ export default function Categories() {
               variant="outline"
               size="sm"
               className="text-red-600 border-red-200"
+              onClick={() => setIsModalVisible(true)}
+              disabled={isError || isLoadingCategories || !categories?.length}
             >
-              <Trash2 size={16} className="mr-2" /> Delete
+              <Trash2 size={16} className="mr-2"  /> Delete
             </Button>
-            <Button variant="outline" size="sm">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={isError || isLoadingCategories || !categories?.length}
+            >
               Export
             </Button>
           </div>
@@ -64,11 +88,54 @@ export default function Categories() {
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
+              {!isError && categories?.length ? (
+                <thead>
+                  <tr className="border-b border-gray-100">
+                    <th className="w-10 p-4">
+                      <Checkbox
+                        onClick={() => {
+                          setIsSelectedAll((state) => !state);
+                          if (!isAllSelected) {
+                            setDeleteList(
+                              categories?.map((category) => category.id) || []
+                            );
+                          } else {
+                            setDeleteList([]);
+                          }
+                        }}
+                        checked={isAllSelected}
+                      />
+                    </th>
+                    <th className="p-4 text-left font-medium text-sm text-gray-500">
+                      Thumbnail
+                    </th>
+                    <th className="p-4 text-left font-medium text-sm text-gray-500">
+                      Icon
+                    </th>
+                    <th className="p-4 text-left font-medium text-sm text-gray-500">
+                      Name
+                    </th>
+                    <th className="p-4 text-left font-medium text-sm text-gray-500">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+              ) : null}
               <thead>
                 <tr className="border-b border-gray-100">
                   <th className="w-10 p-4">
                     <Checkbox
-                      onClick={() => setIsSelectedAll((state) => !state)}
+                      onClick={() => {
+                        setIsSelectedAll((state) => !state);
+                        if (!isAllSelected) {
+                          setDeleteList(
+                            categories?.map((category) => category.id) || []
+                          );
+                        } else {
+                          setDeleteList([]);
+                        }
+                      }}
+                      checked={isAllSelected}
                     />
                   </th>
                   <th className="p-4 text-left font-medium text-sm text-gray-500">
@@ -112,7 +179,7 @@ export default function Categories() {
                         description="Get started by adding a new category."
                         action={{
                           label: "Add new Category",
-                          onClick: () => router.push("/category/new"),
+                          onClick: () => router.push("/categoriees/new"),
                         }}
                       />
                     </td>
@@ -122,7 +189,8 @@ export default function Categories() {
                     <Category
                       key={category.id}
                       category={category as CategoryType}
-                      checked={isAllSelected}
+                      checked={deleteList.includes(category.id)}
+                      removeFromDeleteList={removeFromDeleteList}
                     />
                   ))
                 )}
@@ -131,6 +199,15 @@ export default function Categories() {
           </div>
         </CardContent>
       </Card>
+      {isModalVisible && (
+        <Modal
+          isVisible={isModalVisible}
+          title="Confirm Delete"
+          description="Are you sure you want to delete the selected categories?"
+          onConfirm={handleDelete}
+          onCancel={() => setIsModalVisible(false)}
+        />
+      )}
     </main>
   );
 }

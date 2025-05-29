@@ -21,13 +21,18 @@ import { useCategories } from "@/hooks/useCategories";
 import { useSubCategories } from "@/hooks/useSubCategories";
 import { useProducts } from "@/hooks/useProducts";
 import SubmitButton from "../SubmitButton";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
+// import { useRouter } from "next/router";
 
 export default function ProductForm() {
   const { products } = useProducts();
-  const { id } = useParams();
-  const product = products?.find((product) => product.id === id);
-  const { register, handleSubmit, control, setValue } = useForm({
+  const searchParams = useSearchParams();
+  const pid = searchParams.get("pid");
+  const isEdit = !!pid; // Check if pid exists to determine if it's edit mode
+  const product = products?.find((p) => p.id === Number(pid));
+  console.log(product);
+
+  const { register, handleSubmit, control, setValue, reset } = useForm({
     defaultValues: product,
   });
   const [imgs, setImgs] = useState<{ file: File; url: string }[]>([]);
@@ -38,7 +43,17 @@ export default function ProductForm() {
 
   const onSubmit = (formData: any) => {
     createProduct({ ...formData, imgs });
-  };
+  };5
+
+  useEffect(() => {
+    if (isEdit && product) {
+      reset(product);
+      const preloadedImgs = (product.img_urls || []).map((url: string) => ({
+        url,
+      }));
+      setImgs(preloadedImgs);
+    }
+  }, []);
 
   return (
     <div className="max-w-7xl p-6 bg-white">

@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Image from "next/image";
 import { MoreVertical, Pencil, Trash } from "lucide-react";
 
@@ -6,14 +8,20 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "../ui/button";
 import { SubCategoryType } from "./type";
 import { useSubCategories } from "@/hooks/useSubCategories";
+import Modal from "../Modal";
 
 interface SubCategoryProps {
   subCategory: SubCategoryType;
   checked?: boolean;
   key: string;
+  removeFromDeleteList?: (id: number) => void;
 }
 
-export default function Category({ subCategory, checked }: SubCategoryProps) {
+export default function SubCategory({
+  subCategory,
+  checked,
+  removeFromDeleteList,
+}: SubCategoryProps) {
   const {
     id,
     imgUrl,
@@ -21,11 +29,21 @@ export default function Category({ subCategory, checked }: SubCategoryProps) {
     category: { name: categoryName },
   } = subCategory;
 
-  const { deleteSubCategory } = useSubCategories();
+  const { deleteSubCategory, isDeletingSubCategory } = useSubCategories();
+  const [checkedState, setCheckedState] = useState<boolean>(checked || false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   return (
     <tr className="border-b border-gray-100">
       <td className="p-4">
-        <Checkbox className="accent-blue-600" checked={checked} />
+        <Checkbox
+          className="accent-blue-600"
+          checked={checkedState}
+          onClick={() => {
+            setCheckedState((state) => !state);
+            if (checkedState) removeFromDeleteList?.(id);
+          }}
+        />
       </td>
       <td className="p-4">
         <div className="flex items-center gap-3">
@@ -62,7 +80,22 @@ export default function Category({ subCategory, checked }: SubCategoryProps) {
             <Pencil size={16} />
           </Button>
         </div>
-      </td>
+      </td>{" "}
+      {isModalVisible && (
+        <td>
+          <Modal
+            isVisible={isModalVisible}
+            title="Confirm Deletion"
+            description="Are you sure you want to delete the product? This action cannot be undone."
+            confirmLable="Delete"
+            isLoading={isDeletingSubCategory}
+            onConfirm={() => {
+              deleteSubCategory(id);
+            }}
+            onCancel={() => setIsModalVisible(false)}
+          />
+        </td>
+      )}
     </tr>
   );
 }
