@@ -3,7 +3,14 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
-import { ArchiveX, Plus, Search, Trash2 } from "lucide-react";
+import {
+  ArchiveX,
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  Search,
+  Trash2,
+} from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -109,6 +116,14 @@ export default function SubCategories() {
           </div>
         </CardHeader>
         <CardContent className="p-0">
+          {/* Showing dash */}
+          {subCategories && subCategories.length > 7 && (
+            <div className="px-4 py-2 text-sm text-gray-500">
+              Showing {(currentPage - 1) * pageSize + 1}-
+              {Math.min(currentPage * pageSize, subCategories.length)} of{" "}
+              {subCategories.length}
+            </div>
+          )}
           <div className="overflow-x-auto">
             <table className="w-full">
               {!isError && subCategories?.length ? (
@@ -198,12 +213,13 @@ export default function SubCategories() {
           {subCategories && subCategories.length > pageSize && (
             <div className="flex justify-center items-center gap-2 py-4">
               <Button
+                className="size-[35px] rounded-full grid place-items-center"
                 variant="outline"
                 size="sm"
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
               >
-                Previous
+                <ChevronLeft />
               </Button>
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(
                 (page) => (
@@ -211,11 +227,9 @@ export default function SubCategories() {
                     key={page}
                     variant={page === currentPage ? "default" : "outline"}
                     size="sm"
-                    className={
-                      page === currentPage
-                        ? "bg-blue-600 text-white hover:!bg-blue-700"
-                        : ""
-                    }
+                    className={`size-[35px] rounded-full text-center grid place-items-center ${
+                      page === currentPage ? "bg-blue-600 text-white" : ""
+                    }`}
                     onClick={() => setCurrentPage(page)}
                   >
                     {page}
@@ -223,6 +237,7 @@ export default function SubCategories() {
                 )
               )}
               <Button
+                className="size-[35px] rounded-full grid place-items-center"
                 variant="outline"
                 size="sm"
                 onClick={() =>
@@ -230,7 +245,7 @@ export default function SubCategories() {
                 }
                 disabled={currentPage === totalPages}
               >
-                Next
+                <ChevronRight />
               </Button>
             </div>
           )}

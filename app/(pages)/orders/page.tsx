@@ -1,5 +1,11 @@
 "use client";
-import { CalendarX2, Filter, Search } from "lucide-react";
+import {
+  CalendarX2,
+  ChevronLeft,
+  ChevronRight,
+  Filter,
+  Search,
+} from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useOrders } from "@/hooks/useOrders";
@@ -58,6 +64,13 @@ export default function OrderList() {
           </Button>
         </CardHeader>
         <CardContent className="p-0">
+          {orders && orders.length > 7 && (
+            <div className="px-4 py-2 text-sm text-gray-500">
+              Showing {(currentPage - 1) * pageSize + 1}-
+              {Math.min(currentPage * pageSize, orders.length)} of{" "}
+              {orders.length}
+            </div>
+          )}
           <div className="overflow-x-auto">
             <table className="w-full">
               {!isError && orders?.length ? (
@@ -129,12 +142,13 @@ export default function OrderList() {
           {orders && orders.length > pageSize && (
             <div className="flex justify-center items-center gap-2 py-4">
               <Button
+                className="size-[35px] rounded-full grid place-items-center"
                 variant="outline"
                 size="sm"
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
               >
-                Previous
+                <ChevronLeft />
               </Button>
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(
                 (page) => (
@@ -142,11 +156,9 @@ export default function OrderList() {
                     key={page}
                     variant={page === currentPage ? "default" : "outline"}
                     size="sm"
-                    className={
-                      page === currentPage
-                        ? "bg-blue-600 text-white hover:bg-none"
-                        : ""
-                    }
+                    className={`size-[35px] rounded-full text-center grid place-items-center ${
+                      page === currentPage ? "bg-blue-600 text-white" : ""
+                    }`}
                     onClick={() => setCurrentPage(page)}
                   >
                     {page}
@@ -154,6 +166,7 @@ export default function OrderList() {
                 )
               )}
               <Button
+                className="size-[35px] rounded-full grid place-items-center"
                 variant="outline"
                 size="sm"
                 onClick={() =>
@@ -161,7 +174,7 @@ export default function OrderList() {
                 }
                 disabled={currentPage === totalPages}
               >
-                Next
+                <ChevronRight />
               </Button>
             </div>
           )}
