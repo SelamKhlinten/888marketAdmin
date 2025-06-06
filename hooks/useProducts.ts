@@ -41,7 +41,7 @@ export function useProducts() {
   const { mutate: deleteProducts, isPending: isDeletingProducts } = useMutation(
     {
       mutationFn: deleteMultipleProducts,
-      onSuccess: () => {
+      onSuccess: (data) => {
         queryClient.invalidateQueries({ queryKey: ["products"] });
         toast.success(`${data?.length} Products succesfully deleted.`);
       },

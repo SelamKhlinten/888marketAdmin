@@ -62,7 +62,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 bg-[url('/img/admin-bg.svg')]">
-      {isLogggingIn && <Loader />}
+      {/* {isLogggingIn && <Loader />} */}
       <div className="w-full max-w-xl grid bg-white rounded-lg overflow-hidden shadow-xl">
         <div className="p-8 flex flex-col justify-center">
           <div className="text-center mb-8">
@@ -179,7 +179,13 @@ export function LoginPage({ onLogin }: LoginPageProps) {
               type="submit"
               className="w-full bg-blue-600 hover:bg-blue-700"
             >
-              Login
+              {isLogggingIn ? (
+                <div className="flex justify-center items-center w-full">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                </div>
+              ) : (
+                <span>Login</span>
+              )}
             </Button>
           </form>
         </div>
@@ -187,5 +193,6 @@ export function LoginPage({ onLogin }: LoginPageProps) {
     </div>
   );
 }
+
 
 export default LoginPage;

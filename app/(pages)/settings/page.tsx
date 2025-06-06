@@ -47,10 +47,10 @@ export default function Settings() {
                 <Lock className="mr-2 h-4 w-4" />
                 Security
               </TabsTrigger>
-              <TabsTrigger value="billing" className="justify-start w-full">
+              {/* <TabsTrigger value="billing" className="justify-start w-full">
                 <CreditCard className="mr-2 h-4 w-4" />
                 Billing
-              </TabsTrigger>
+              </TabsTrigger> */}
               <TabsTrigger
                 value="notifications"
                 className="justify-start w-full"
@@ -58,14 +58,14 @@ export default function Settings() {
                 <BellIcon className="mr-2 h-4 w-4" />
                 Notifications
               </TabsTrigger>
-              <TabsTrigger value="appearance" className="justify-start w-full">
+              {/* <TabsTrigger value="appearance" className="justify-start w-full">
                 <Globe className="mr-2 h-4 w-4" />
                 Appearance
               </TabsTrigger>
               <TabsTrigger value="help" className="justify-start w-full">
                 <HelpCircle className="mr-2 h-4 w-4" />
                 Help & Support
-              </TabsTrigger>
+              </TabsTrigger> */}
             </TabsList>
           </div>
           <div className="flex-1">

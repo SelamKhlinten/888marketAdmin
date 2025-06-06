@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
 import { ArchiveX, Plus, Search, Trash2 } from "lucide-react";
@@ -28,6 +28,17 @@ export default function Categories() {
   const [isAllSelected, setIsSelectedAll] = useState<boolean>(false);
   const [deleteList, setDeleteList] = useState<number[]>([]);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 7; // You can adjust this as needed
+
+  // Calculate paginated categories
+  const paginatedCategories = useMemo(() => {
+    if (!categories) return [];
+    const start = (currentPage - 1) * pageSize;
+    return categories.slice(start, start + pageSize);
+  }, [categories, currentPage]);
+
+  const totalPages = categories ? Math.ceil(categories.length / pageSize) : 1;
 
   const removeFromDeleteList = (id: number) => {
     setDeleteList((prevList) => prevList.filter((item) => item !== id));
@@ -157,7 +168,7 @@ export default function Categories() {
                     </td>
                   </tr>
                 ) : (
-                  categories?.map((category) => (
+                  paginatedCategories.map((category) => (
                     <Category
                       key={category.id}
                       category={category as CategoryType}
@@ -169,6 +180,46 @@ export default function Categories() {
               </tbody>
             </table>
           </div>
+          {/* Pagination Controls */}
+          {categories && categories.length > pageSize && (
+            <div className="flex justify-center items-center gap-2 py-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </Button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <Button
+                    key={page}
+                    variant={page === currentPage ? "default" : "outline"}
+                    size="sm"
+                    className={
+                      page === currentPage
+                        ? "bg-blue-600 text-white hover:!bg-inherit"
+                        : ""
+                    }
+                    onClick={() => setCurrentPage(page)}
+                  >
+                    {page}
+                  </Button>
+                )
+              )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
       {isModalVisible && (

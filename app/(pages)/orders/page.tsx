@@ -7,9 +7,22 @@ import Empty from "@/components/Empty";
 import Error from "@/components/Error";
 import Order from "@/components/orders/Order";
 import OrderType from "@/components/orders/type";
+import { useState, useMemo } from "react";
 
 export default function OrderList() {
   const { orders, isLoadingOrders, isError, refetchOrders } = useOrders();
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 7; // You can adjust this as needed
+
+  // Calculate paginated orders
+  const paginatedOrders = useMemo(() => {
+    if (!orders) return [];
+    const start = (currentPage - 1) * pageSize;
+    return orders.slice(start, start + pageSize);
+  }, [orders, currentPage]);
+
+  const totalPages = orders ? Math.ceil(orders.length / pageSize) : 1;
+
   return (
     <main className="p-6">
       <div className="flex items-center justify-between mb-6">
@@ -105,13 +118,53 @@ export default function OrderList() {
                     </td>
                   </tr>
                 ) : (
-                  orders?.map((order) => (
+                  paginatedOrders.map((order) => (
                     <Order order={order as OrderType} key={order.id} />
                   ))
                 )}
               </tbody>
             </table>
           </div>
+          {/* Pagination Controls */}
+          {orders && orders.length > pageSize && (
+            <div className="flex justify-center items-center gap-2 py-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </Button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <Button
+                    key={page}
+                    variant={page === currentPage ? "default" : "outline"}
+                    size="sm"
+                    className={
+                      page === currentPage
+                        ? "bg-blue-600 text-white hover:bg-none"
+                        : ""
+                    }
+                    onClick={() => setCurrentPage(page)}
+                  >
+                    {page}
+                  </Button>
+                )
+              )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
     </main>
