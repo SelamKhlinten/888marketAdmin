@@ -113,7 +113,7 @@ export default function OrderList() {
                   <tr>
                     <td colSpan={8}>
                       <Error
-                        description="We encountered an error while fetching products. Please try again."
+                        description="We encountered an error while fetching orders. Please try again."
                         onRetry={refetchOrders}
                       />
                     </td>
@@ -157,7 +157,9 @@ export default function OrderList() {
                     variant={page === currentPage ? "default" : "outline"}
                     size="sm"
                     className={`size-[35px] rounded-full text-center grid place-items-center ${
-                      page === currentPage ? "bg-blue-600 text-white" : ""
+                      page === currentPage
+                        ? "bg-blue-600 text-white hover:!bg-blue-700"
+                        : ""
                     }`}
                     onClick={() => setCurrentPage(page)}
                   >

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { MoreVertical, Pencil, Trash } from "lucide-react";
+import { Pencil, Trash } from "lucide-react";
 import Image from "next/image";
 
 import OrderType from "./type";
@@ -42,7 +42,6 @@ export default function Order({ order }: OrderComponentProps) {
         return "bg-gray-100 text-gray-600 hover:bg-gray-100";
     }
   };
-  const [isActionsOpen, setIsActionsOpen] = useState(false);
   return (
     <tr key={id} className="border-b border-gray-100">
       <td className="p-4 text-xs font-semibold">{`#ORD-${order.id}`}</td>
@@ -85,7 +84,7 @@ export default function Order({ order }: OrderComponentProps) {
             size="sm"
             className="text-blue-600 border-blue-200"
           >
-            <Pencil size={16}/>
+            <Pencil size={16} />
             {/* <span className="text-sm">Edit</span> */}
           </Button>
         </div>

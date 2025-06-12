@@ -234,7 +234,9 @@ export default function Products() {
                     variant={page === currentPage ? "default" : "outline"}
                     size="sm"
                     className={`size-[35px] rounded-full text-center grid place-items-center ${
-                      page === currentPage ? "bg-blue-600 text-white" : ""
+                      page === currentPage
+                        ? "bg-blue-600 text-white hover:!bg-blue-700"
+                        : ""
                     }`}
                     onClick={() => setCurrentPage(page)}
                   >

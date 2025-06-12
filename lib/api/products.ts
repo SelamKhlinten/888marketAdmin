@@ -20,6 +20,7 @@ export const getProducts = async () => {
       price,
       stock,
       img_urls,
+      description,
       category:categories (
         id,
         name
@@ -130,11 +131,29 @@ export const updateProduct = async (product: any) => {
       price,
       stock,
       imgs,
+      imgUrls,
       category: { id: category_id },
       subcategory: { id: subcategory_id },
       description,
     } = product;
-    const img_urls = await uploadImages(imgs, "products");
+    // console.log(product);
+    // console.log(imgUrls);
+    // console.log(imgs);
+
+    const toBeDeleted = imgUrls.filter((url: string) => {
+      const del = imgs.some((img: any) => img.url === url);
+      return !del;
+    });
+    await Promise.all(
+      toBeDeleted.map((url: string) => deleteImage(url, "products"))
+    );
+    const imgsToUpload = imgs.filter((img: any) =>
+      Object.keys(img).includes("file")
+    );
+    console.log("Images to upload:", imgsToUpload);
+
+    const img_urls = await uploadImages(imgsToUpload, "products");
+    console.log(img_urls);
     const { data, error } = await supabase
       .from("products")
       .update({

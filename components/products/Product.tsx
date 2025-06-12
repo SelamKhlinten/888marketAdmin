@@ -30,7 +30,7 @@ export default function Product({
     name,
     category,
     subcategory,
-    price: { amount, currency },
+    price: { discounted, currency },
     stock = 12,
   } = product;
   const { deleteProduct, isDeletingProduct } = useProducts();
@@ -75,7 +75,7 @@ export default function Product({
       <td className="p-4 text-sm">{categoryName}</td>
       <td className="p-4 text-sm">{subcategoryName}</td>
       <td className="p-4 font-medium">
-        <span className="">{amount}</span>
+        <span className="">{discounted}</span>
         <span className="text-xs font-bold">{currency.toUpperCase()}</span>
       </td>
       <td className="p-4 text-sm">{stock}</td>

@@ -21,39 +21,40 @@ import { useCategories } from "@/hooks/useCategories";
 import { useSubCategories } from "@/hooks/useSubCategories";
 import { useProducts } from "@/hooks/useProducts";
 import SubmitButton from "../SubmitButton";
-import { useParams, useSearchParams } from "next/navigation";
-// import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
+import ProductTypes from "./type";
 
 export default function ProductForm() {
-  const { products } = useProducts();
+  const {
+    products,
+    isCreatingProduct,
+    isUpdatingProduct,
+    createProduct,
+    updateProduct,
+  } = useProducts();
   const searchParams = useSearchParams();
   const pid = searchParams.get("pid");
-  const isEdit = !!pid; // Check if pid exists to determine if it's edit mode
   const product = products?.find((p) => p.id === Number(pid));
-  console.log(product);
 
   const { register, handleSubmit, control, setValue, reset } = useForm({
     defaultValues: product,
   });
-  const [imgs, setImgs] = useState<{ file: File; url: string }[]>([]);
+
+  const images =
+    product?.imgUrls.map((p: ProductTypes) => {
+      return { url: p };
+    }) || [];
+
+  const [imgs, setImgs] = useState<{ file: File; url: string }[]>(images);
   const file = useRef<HTMLInputElement | null>(null);
   const { categories } = useCategories();
   const { subCategories } = useSubCategories();
-  const { createProduct, isCreatingProduct } = useProducts();
 
   const onSubmit = (formData: any) => {
-    createProduct({ ...formData, imgs });
-  };5
-
-  useEffect(() => {
-    if (isEdit && product) {
-      reset(product);
-      const preloadedImgs = (product.img_urls || []).map((url: string) => ({
-        url,
-      }));
-      setImgs(preloadedImgs);
-    }
-  }, []);
+    pid
+      ? updateProduct({ ...formData, imgs })
+      : createProduct({ ...formData, imgs });
+  };
 
   return (
     <div className="max-w-7xl p-6 bg-white">
@@ -70,16 +71,22 @@ export default function ProductForm() {
             <div className="flex items-center gap-2">
               <ShoppingBag className="h-5 w-5 text-gray-700" />
               <h1 className="text-xl font-medium text-gray-700">
-                Add New Product
+                {pid ? "Edit Product" : "Add New Product"}
               </h1>
             </div>
           </div>
           <div className="flex gap-4">
-            <Button variant="outline" className="gap-2 rounded-full">
-              <Save className="h-5 w-5" />
-              Save Draft
-            </Button>
-            <SubmitButton isLoading={isCreatingProduct} label="Add Product" />
+            {!pid && (
+              <Button variant="outline" className="gap-2 rounded-full">
+                <Save className="h-5 w-5" />
+                Save Draft
+              </Button>
+            )}
+
+            <SubmitButton
+              isLoading={pid ? isUpdatingProduct : isCreatingProduct}
+              label={pid ? "Edit Product" : "Add Product"}
+            />
           </div>
         </div>
         {/* main-content */}
@@ -120,14 +127,30 @@ export default function ProductForm() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <Label htmlFor="basePrice" className="block mb-2">
-                    Price
+                    Orignal Price
                   </Label>
                   <Input
                     id="basePrice"
                     className="bg-gray-100 border-0"
                     type="number"
+                    inputMode="decimal"
+                    step="0.01"
                     placeholder="...amount"
-                    {...register("price.amount")}
+                    {...register("price.orignal")}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="basePrice" className="block mb-2">
+                    Discounted Price
+                  </Label>
+                  <Input
+                    id="basePrice"
+                    className="bg-gray-100 border-0"
+                    type="number"
+                    inputMode="decimal"
+                    step="0.01"
+                    placeholder="...amount"
+                    {...register("price.discounted")}
                   />
                 </div>
 
@@ -251,7 +274,7 @@ export default function ProductForm() {
             <div className="bg-gray-50 p-6 rounded-lg">
               <h2 className="text-lg font-medium mb-4">Upload Image</h2>
               {/* main-image */}
-              {imgs[0]?.url ? (
+              {imgs?.[0]?.url && (
                 <div className="bg-white rounded-lg p-4 mb-4 relative items-center justify-center flex w-fit">
                   <Image
                     width={200}
@@ -270,15 +293,13 @@ export default function ProductForm() {
                     X
                   </button>
                 </div>
-              ) : (
-                ""
               )}
-              <div className={`flex gap-2 overflow-x-auto pb-2 `}>
+              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 relative">
                 {/* supporting images */}
                 {imgs?.slice(1)?.map((sup, i) => (
                   <div
                     className="border border-blue-200 rounded-lg p-2 min-w-[80px] h-[80px] flex items-center justify-center relative"
-                    key={sup.file.name}
+                    key={i}
                   >
                     <Image
                       width={40}
@@ -319,9 +340,12 @@ export default function ProductForm() {
                     e.preventDefault();
                     file?.current?.click();
                   }}
+                  type="button"
                 >
                   <Plus className="h-6 w-6 text-gray-400" />
                 </button>
+                {/* Fade-out gradient cue for scroll */}
+                {/* <div className="pointer-events-none absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-white via-white/80 to-transparent" /> */}
               </div>
             </div>
           </div>

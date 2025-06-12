@@ -67,8 +67,8 @@ export default function SubCategories() {
     <main className="p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold mb-1">Categories</h2>
-          <p className="text-gray-500">Manage your product categories.</p>
+          <h2 className="text-2xl font-bold mb-1">Sub-Categories</h2>
+          <p className="text-gray-500">Manage your product sub-categories.</p>
         </div>
         <Button
           className="bg-blue-600 hover:bg-blue-700"
@@ -228,7 +228,9 @@ export default function SubCategories() {
                     variant={page === currentPage ? "default" : "outline"}
                     size="sm"
                     className={`size-[35px] rounded-full text-center grid place-items-center ${
-                      page === currentPage ? "bg-blue-600 text-white" : ""
+                      page === currentPage
+                        ? "bg-blue-600 text-white hover:!bg-blue-700"
+                        : ""
                     }`}
                     onClick={() => setCurrentPage(page)}
                   >
