@@ -66,7 +66,7 @@ export default function Customer({
             width={100}
             height={100}
             className="size-[40px] rounded-full object-cover"
-            alt={`${name.slice(0, 4)}-img`}
+            alt={`${name?.slice(0, 4)}-img`}
           />
           <div>
             <div className="font-medium">{name}</div>
